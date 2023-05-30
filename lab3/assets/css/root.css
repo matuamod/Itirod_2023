@@ -1,0 +1,21 @@
+:root {
+    --background-color: #6AFFFF;
+    --primary-color: #1E1E1E;
+    --accent-color: #5d8afb;
+    --new-color: #5d8afb;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    background: var(--background-color);
+    font-size: 15px;
+    min-height: 100vh;
+    line-height: 1.5;
+    color: var(--primary-color);
+}
