@@ -1,0 +1,132 @@
+:root {
+    --primary-color: #262626;
+    --primary-header-hover-color: #346737;
+    --button-color: #325aec;
+    --button-text-color: #fbf7f7;
+}
+
+.header__container {
+    display: flex;
+    min-height: 80px;
+    align-items: center;
+}
+
+.header__logo {
+    font-size: 35px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.header__logo:hover {
+    opacity: 0.9;
+    cursor: pointer;
+    color: var(--primary-header-hover-color);
+}
+
+.header__menu {
+    flex: 1 1 auto;
+}
+
+.menu {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.menu__list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu__item {
+    margin-inline-end: 50px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.menu__link {
+    color: var(--primary-color);
+}
+
+.menu__link:hover {
+    opacity: 0.9;
+    cursor: pointer;
+    color: var(--primary-header-hover-color);
+}
+
+.header__button {
+    flex: 0 0 200px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button-add-car {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 13px 30px;
+    border-radius: 25px;
+    color: var(--button-text-color);
+    transition: box-shadow 0.15s;
+}
+
+.button-add-car:hover {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.35);
+}
+
+.button-blue {
+    background-color: var(--button-color);
+}
+
+.header__hr {
+    width: 100%;
+    border-top: 1px solid var(--primary-color);
+}
+
+@media (max-width: 991.98px) {
+    .header__container {
+        min-height: 65px;
+    }
+
+    .header__logo {
+        font-size: 30px;
+    }
+
+    .menu__item {
+        margin-inline-end: 20px;
+        font-size: 20px;
+    }
+
+    .header__button {
+        flex: 0 0 150px;
+    }
+
+    .button-add-car {
+        font-size: 20px;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .header__container {
+        min-height: 50px;
+    }
+
+    .header__logo {
+        font-size: 25px;
+    }
+
+    .menu__item {
+        margin-inline-end: 15px;
+        font-size: 15px;
+    }
+
+    .header__button {
+        flex: 0 0 100px;
+    }
+
+    .button-add-car {
+        font-size: 15px;
+        padding: 8px 18px;
+    }
+}

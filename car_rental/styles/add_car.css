@@ -1,0 +1,105 @@
+main {
+    width: 100%;
+}
+
+::placeholder {
+    color: black;
+}
+
+.add-car-section {
+    width: 100%;
+}
+
+@media (max-width: 991.98px) {
+    .form-descr__img-list
+     {
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .top-descr__first-part,
+    .top-descr__sec-part {
+        margin: 0 auto;
+        flex-direction: column;
+    }
+
+}
+
+.form-descr__img-list {
+    display: flex;
+    justify-content: space-around;
+}
+
+.form-descr__img-list__item-wrap {
+   display: flex;
+   flex-direction: column;
+}
+
+.add-car-img {
+    height: 280px;
+}
+
+.item__page_descr-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.item__page_content__top_desc__desc_wrap,
+.item__page_content__bottom_desc {
+    display: flex;
+    flex-direction: column;
+    font-size: 30px;
+}
+
+.item__page_content__top_desc__desc_wrap input, select {
+    height: 35px;
+    width: 150px;
+    border-radius: 15px;
+    font-size: 20px;
+    text-align: center;
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--primary-color);
+}
+
+.top-descr__first-part,
+.top-descr__sec-part {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.item__page_content__bottom_desc {
+    margin: 30px 30px 30px 30px;
+}
+
+#car_description {
+    margin-bottom: 20px;
+}
+
+.item__page_content__bottom_desc textarea {
+    width: 100%;
+    height: 200px;
+    font-size: 20px;
+    padding: 10px 0px 0px 10px;
+    border-radius: 25px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--primary-color);
+}
+
+.button-save {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 15px 35px;
+    border-radius: 50px;
+    margin-left: 30px;
+    color: var(--button-text-color);
+    transition: box-shadow 0.15s;
+}
+
+.button-save:hover {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.35);
+}

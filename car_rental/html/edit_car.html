@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="/styles/add_car.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <title>Car Rental</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <div class="header__container">
+          <a href="/html/index.html" class="header__logo">Car rental</a>
+          <nav class="header__menu menu">
+            <ul class="menu__list">
+              <li class="menu__item"><a href="/html/index.html" class="menu__link">Catalog</a></li>
+              <li class="menu__item"><a href="/html/cart.html" class="menu__link">Cart</a></li>
+              <li id="login-li" class="menu__item"><a id="login-a" href="/html/login.html" class="menu__link">Login</a></li>
+              <li id="register-li" class="menu__item"><a id="register-a" href="/html/register.html" class="menu__link">Register</a></li>
+            </ul>
+          </nav>
+          <!-- <div class="header__button">
+            <a href="/html/add_car.html" class="button-add-car button-blue">Add car</a>
+          </div> -->
+        </div>
+        <div class="header__hr">
+          <hr>
+        </div>  
+      </header>
+      <main class="main">
+        <section class="add-car-section">
+          <div class="add-car-section__container">
+            <article class="add-car-section__content add-car">
+              <form class="add-car__form">
+                <div class="add-car__form__descr form-descr">
+                  <div class="form-descr__img-list">
+                    <div class="form-descr__img-list__item-wrap">
+                      <label for="image-upload-input" class="file-upload-area">
+                        <img class="add-car-img first-car-img" src="/assets/src/add_car_photo.png" alt="item image" />
+                      </label>
+                      <input name="image" class="image-upload-input" id="first-car-img" type="file"/>
+                      <div id="first_photo_warning"></div>
+                    </div>
+                    <div class="form-descr__img-list__item-wrap">
+                      <label for="image-upload-input" class="file-upload-area">
+                        <img class="add-car-img second-car-img" src="/assets/src/add_car_photo.png" alt="item image"/>
+                      </label>
+                      <input name="image" class="image-upload-input" id="second-car-img" type="file"/>
+                      <div id="second_photo_warning"></div>
+                    </div>
+                    <div class="form-descr__img-list__item-wrap">
+                      <label for="image-upload-input" class="file-upload-area">
+                        <img class="add-car-img third-car-img" src="/assets/src/add_car_photo.png" alt="item image"/>
+                      </label>
+                      <input name="image" class="image-upload-input" id="third-car-img" type="file"/>
+                      <div id="third_photo_warning"></div>
+                    </div>
+                  </div>
+                  <div class="item__page_descr-wrap">
+                    <div class="item__page_content__top_desc__desc_wrap top-descr">
+                      <div class="top-descr__first-part">
+                        <b>Brand name: </b>
+                        <input name="name" id="name" placeholder="Name"/> 
+                        <b>Model: </b>
+                        <input name="model" id="model" placeholder="Model"/> 
+                        <b>Category : </b>
+                        <select name="category" id="category">
+                          <option value="category" selected disabled>Category</option>
+                          <option value="sedan">sedan</option>
+                          <option value="hatchback">hatchback</option>
+                          <option value="wagon">wagon</option>
+                          <option value="SUV">SUV</option>
+                          <option value="pickup">pickup</option>
+                          <option value="van">van</option>
+                        </select>
+                        <b>Fuel types : </b>
+                        <select name="fuel-type" id="fuel-type">
+                          <option value="category" selected disabled>Fuel</option>
+                          <option value="diesel">diesel</option>
+                          <option value="petrol">petrol</option>
+                          <option value="electric">electric</option>
+                          <option value="hybrid">hybrid</option>
+                        </select>
+                      </div>
+                      <div class="top-descr__sec-part">
+                        <b>Seats count : </b>
+                        <select name="seats-count" id="seats-count">
+                          <option value="category" selected disabled>Seats</option>
+                          <option value="2">2</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="7">7</option>
+                          <option value="9">9</option>
+                        </select>
+                        <b>Color : </b>
+                        <input name="color" id="color" placeholder="Color"/> 
+                        <b>Reg. plate: </b>
+                        <input name="plate" id="plate" placeholder="0000 CP-7"/> 
+                        <b>Days price: </b>
+                        <input name="price" id="price" placeholder="Price"/> 
+                        </div>
+                    </div>
+                    <div class="item__page_content__bottom_desc">
+                      <p id="car_description">Car description:</p>
+                      <textarea name="desc" placeholder="Description" id="description"></textarea>
+                    </div>
+                  </div>
+                  <div class="button-save-block">
+                    <p id="error" class="error"></p>
+                    <button class="button-save button-blue">Edit</button>
+                  </div>
+                </div>
+              </form>
+            </article>
+          </div>
+        </section>
+      </main>
+      <script src="https://js.upload.io/upload-js/v2"></script>
+      <script type="module" src="/js/edit_car.js"></script>
+      </div>
+    </div>
+  </body>
+</html>

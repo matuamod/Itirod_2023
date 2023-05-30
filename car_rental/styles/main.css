@@ -1,0 +1,210 @@
+:root {
+    --background-color: #6AFFFF;
+    --primary-color: #262626;
+    --primary-hover-color:rgb(246, 246, 88);
+    --slider-color: black;
+    --slider-pointer-color: red;
+    --card-color: white;
+    --card-hover-color: rgb(144, 142, 142);
+}
+
+main {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+@media (max-width: 991.98px) {
+    main {
+        flex-direction: column;
+    }
+
+    .requirement__brand-model,
+    .requirement__type-fuel-color {
+        justify-content: space;
+    }
+
+}
+
+.configure-section__container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 15px;
+    /* max-width: 550px; */
+}
+
+#section-preview {
+    font-size: 35px;    
+}
+
+.configure-section__container p {
+    font-size: 25px;
+    margin: 30px 0px 30px 0px;
+}
+
+.button-search {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.configure__car-requirement button {   
+    font-size: 25px;
+    font-weight: bold;
+    padding: 15px 35px;
+    border-radius: 50px;
+    color: var(--button-text-color);
+    transition: box-shadow 0.15s;
+}
+
+.configure__car-requirement button:hover {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.35);
+}
+
+.requirement__brand-model,
+.requirement__type-fuel-color {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.select-style {
+    font-size: 25px;
+    text-align: center;
+    border-radius: 25px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.25);
+}
+
+.requirement__brand-model select {
+    height: 50px;
+    width: 200px;
+}
+
+.requirement__type-fuel-color select {
+    height: 50px;
+    width: 150px;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    background: var(--slider-color);
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: 0.2s;
+    transition: opacity .2s;
+    margin-bottom: 10px;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--slider-pointer-color);
+    cursor: pointer;
+}
+
+.from-to-pointers {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-section {
+    display: flex;
+}
+
+.search-section__filter__condition {
+    width: 98%;
+    text-align: right;
+}
+
+.search-section__filter__condition span {
+    font-size: 25px;
+    padding-right: 10px;
+}
+
+.search-section__filter__condition select {
+    height: 30px;
+    width: 200px;
+    text-align: center;
+    font-size: 20px;
+    background-color: var(--background-color);
+}
+
+.search-section__content {
+    width: 98%;
+    margin: auto;
+}
+
+@keyframes list-item-color-animation {
+    100% {
+        border-width: 1px;
+        background: var(--card-hover-color);
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.5);
+    }
+}
+
+.search-content__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-list__item {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--card-color);
+    max-width: 100%;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 25px;
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.25);
+}
+
+.search-list__item:hover {
+    border-color: var(--primary-hover-color);
+    color: var(--card-color);
+    animation: list-item-color-animation 0.3s normal forwards ease-in-out;
+}
+
+.item__img-wrap img {
+    /* width: 200%; */
+    max-height: 200px;
+    border-radius: 25px;
+}
+
+.item__descr-wrap {
+    align-items: center;
+    margin: auto;
+    margin-right: 35px;
+    margin-left: 35px;
+}
+
+.descr-wrap__title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.descr-wrap__sub {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.descr-wrap__price {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: right;
+}

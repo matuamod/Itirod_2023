@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <title>Car Rental</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <div class="header__container">
+          <a href="/html/index.html" class="header__logo">Car rental</a>
+          <nav class="header__menu menu">
+            <ul class="menu__list">
+              <li class="menu__item"><a href="/html/index.html" class="menu__link">Catalog</a></li>
+              <li class="menu__item"><a href="/html/cart.html" class="menu__link">Cart</a></li>
+              <li id="login-li" class="menu__item"><a id="login-a" href="/html/login.html" class="menu__link">Login</a></li>
+              <li id="register-li" class="menu__item"><a id="register-a" href="/html/register.html" class="menu__link">Register</a></li>
+            </ul>
+          </nav>
+          <!-- <div class="header__button">
+            <a href="/html/add_car.html" class="button-add-car button-blue">Add car</a>
+          </div> -->
+        </div>
+        <div class="header__hr">
+          <hr>
+        </div>  
+      </header>
+      <main class="main">
+        <section class="configure-section">
+          <div class="configure-section__container configure">
+            <p id="section-preview">You can choose one of 173 cars for rent here</p>
+            <div class="configure__car-requirement requirement">
+              <div class="requirement__brand-model">
+                <select id="brand" class="select-style" name="brand">
+                </select>
+                <select id="model" class="select-style" name="model">
+                </select>
+              </div>
+              <div class="requirement__type-fuel-color">
+                <select id="type" class="select-style" name="type">
+                </select>
+                <select id="fuel" class="select-style" name="fuel">
+                </select>
+                <select id="color" class="select-style" name="color">
+                </select>
+              </div>
+              <!-- <div class="configure__year">
+                <p>Manufacture year:</p>
+                <div class="slidecontainer">
+                  <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                </div>
+                <div class="from-to-pointers">
+                  <span>from 1970</span>
+                  <span>to 2023</span>
+                </div>
+              </div> -->
+              <div class="configure__price-per-hour">
+                <p>Price per day:</p>
+                <div class="slidecontainer">
+                  <input type="range" min="10" max="100" value="55" class="slider" id="myRange">
+                </div>
+                <div class="from-to-pointers">
+                  <span>from 10$</span>
+                  <span>to 100$</span>
+                </div>
+              </div>
+              <div class="button-search">
+                <button class="button-blue">Search</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="search-section">
+          <div class="search-section__container">
+            <div class="search-section__filter__condition filter-condition">
+              <span>Sort by:</span>
+              <select name="sort-by" id="sort_by">
+                <option value="actual">Actual relevants</option>
+                <option value="low-to-high">Low to high price</option>
+                <option value="high-to-low">High to low price</option>
+              </select>
+            </div>
+            <div class="search-section__content search-content">
+              <div class="search-content__sort"></div>
+              <ul class="search-content__list search-list">
+                <!-- <li class="search-list__item item">
+                  <div class="item__img-wrap">
+                    <a href="/html/car.html" class="item__img-hover">
+                      <img class="car_image" src="/assets/cars/image 14.jpg" alt="Car photo">
+                    </a>
+                  </div>
+                  <div class="item__descr-wrap descr-wrap">
+                    <p class="descr-wrap__title">BMW X5M F95</p>
+                    <p class="descr-wrap__sub">
+                        It's a rear-biased four-wheel drive front-engined 5-door large SUV with 5 seats. 
+                        With 616 hp, the twin turbocharged 4.4 Liter 32v quad-cam V8 gasoline engine 
+                        (BMW S63B44) accelerates this X5 M Competition to 62 mph in 3.8 seconds and on to a maximum speed of 155 mph...
+                    </p>
+                    <p class="descr-wrap__price">55$</p>
+                  </div>
+                </li> -->
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+      <script type="module" src="/js/index.js"></script>
+      <script src="/js/sort.js"></script>
+      </div>
+    </div>
+  </body>
+</html>
+

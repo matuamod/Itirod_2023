@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="/styles/car.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <title>Car Rental</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <div class="header__container">
+          <a href="/html/index.html" class="header__logo">Car rental</a>
+          <nav class="header__menu menu">
+            <ul class="menu__list">
+              <li class="menu__item"><a href="/html/index.html" class="menu__link">Catalog</a></li>
+              <li class="menu__item"><a href="/html/cart.html" class="menu__link">Cart</a></li>
+              <li id="login-li" class="menu__item"><a id="login-a" href="/html/login.html" class="menu__link">Login</a></li>
+              <li id="register-li" class="menu__item"><a id="register-a" href="/html/register.html" class="menu__link">Register</a></li>
+            </ul>
+          </nav>
+          <!-- <div class="header__button">
+            <a href="/html/add_car.html" class="button-add-car button-blue">Add car</a>
+          </div> -->
+        </div>
+        <div class="header__hr">
+          <hr>
+        </div>  
+      </header>
+      <main class="main">
+        <section class="car-section">
+          <div class="car-section__container">
+            <article class="car-section__content car-content">
+              <div class="car-content__title"><p id="car-content-title">BMW M5</p></div>
+              <div class="car-content__img">
+                <div class="car-image"><img id="first-photo" src="/assets/cars/first_m5.jpg" alt="first photo"></div>
+                <div class="car-image"><img id="second-photo" src="/assets/cars/second_m5.jpg" alt="second photo"></div>
+                <div class="car-image"><img id="third-photo" src="/assets/cars/first_m5.jpg" alt="first photo"></div>
+              </div>
+              <div class="car-content__car-card car-card">
+                <div class="car-card__title">
+                  <p id="car-card-title">
+                  The F10 BMW M5 series swapped its predecessor's naturally-aspirated V10 for a twin-turbocharged V8, 
+                  offering gearheads a generous bump in horsepower and torque. Rear-wheel drive was the only 
+                  configuration available, but buyers in the United States could choose between a dual-clutch automatic 
+                  transmission or a 6-speed manual. This makes the new F10 BMW M5 the most useful M5 ever, offering 
+                  more luxury than ever before while outperforming the more expensive supercars of the era.
+                  </p>
+                </div>
+                <div class="header__hr car-card__hr"><hr></div>
+                <div class="car-card__sub">
+                  <div class="car-card__inf inf">
+                    <div class="inf__calculate">
+                      <span>Calculate :</span>
+                      <span>from</span>
+                      <input class="start_date" type="date" id="start" name="trip-start" min="2023-01-01" max="2023-12-31">
+                      <span>to</span>
+                      <input class="end_date" type="date" id="end" name="trip-start" min="2023-01-01" max="2023-12-31">
+                    </div>
+                    <div class="inf__destination">
+                      <span>Locations :</span>
+                      <span>from</span>
+                      <input class="start_location" id="start" name="trip-start" placeholder="Location">
+                      <span>to</span>
+                      <input class="end_location" id="end" name="trip-start" placeholder="Location">
+                    </div>
+                  </div>
+                  <div class="car-card__rend-price rend-price">
+                    <div class="rend-price__src">
+                      <button id="btn-calculate" class="btn-rend-car btn-calculate">Calculate</button>
+                      <span id="total-price">Total: </span>
+                      <span id="total-price-value">0$</span>
+                    </div>
+                    <div class="rend_btn">
+                      <button id="btn-rend-car" class="btn-rend-car button-blue">Rend</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+      <script type="module" src="/js/car.js"></script>
+      </div>
+    </div>
+  </body>
+</html>

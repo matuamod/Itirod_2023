@@ -1,0 +1,167 @@
+:root {
+    --primary-color: #262626;
+    --primary-hover-color: #346737;
+    --primary-src-color: grey;
+    --button-text-color: #fbf7f7;
+}
+
+main {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 991.98px) {
+    main {
+        flex-direction: column;
+    }
+
+    .sign-section__content {
+        position: relative;
+        left: 0px;
+    }
+
+    .form-item p {
+        font-size: 25px;
+    }
+}
+
+.register-section {
+    padding: 70px 0px 100px 0px;
+}
+
+.sign-section__container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.sign-section__content {
+    position: relative;
+    left: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.block-sign {
+    margin: 0 auto;
+}
+
+.block-sign__title {
+    font-size: 25px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+.block-sign__title h1 {
+    margin-bottom: 20px;
+}
+
+#sign-in-form {
+    margin: 100px 0px 140px 0px;
+}
+
+.title__sub {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.title__sub h2 {
+    font-size: 18px;
+}
+
+.title__sub a {
+    color: var(--primary-color);
+    font-weight: lighter;
+    margin-left: 10px;
+}
+
+.title__sub a:hover {
+    color: var(--primary-hover-color);
+}
+
+.block-sign__form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.form-item p {
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.form-item input {
+    width: 60%;
+    height: 55px;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 50px;
+    border-width: 1px;
+    padding-left: 25px;
+    border-style: solid;
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.25);
+}
+
+.form__checkbox {
+    display: flex;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.form__checkbox input {
+    height: 25px;
+    width: 25px;
+    margin-right: 20px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--primary-color);
+}
+
+.form__checkbox h2 {
+    font-size: 18px;
+    color: var(--primary-color);    
+}
+
+.button-submit {
+    margin-top: 50px;
+    flex: 0 0 200px;
+    display: flex;
+    justify-content: center;
+}
+
+.sign-section__button {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 20px 50px;
+    border-radius: 50px;
+    color: var(--button-text-color);
+    transition: box-shadow 0.15s;
+}
+
+.sign-section__button:hover {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.35);
+}
+
+.sign-section__image {
+    display: flex;
+    align-items: center;
+    flex: 0 1 50%;
+}
+
+.sign-section__image img {
+    max-width: 100%;
+}

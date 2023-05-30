@@ -1,0 +1,23 @@
+version: "3"
+services:
+
+  postgres:
+    image: postgres:13
+    container_name: postgres_db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      # Wait for postgres to actually start before consider service 'healthy'
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # volumes:
+    #   - ../postgres_db:/var/lib/postgresql/data
+    #   - ./entrypoints/db.sql:/docker-entrypoint-initdb.d/db.sql:rw
+    #   - ./entrypoints/fake.sql:/docker-entrypoint-initdb.d/fake.sql:rw

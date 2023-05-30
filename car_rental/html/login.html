@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/sign.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <title>Car Rental</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <div class="header__container">
+          <a href="/html/index.html" class="header__logo">Car rental</a>
+          <nav class="header__menu menu">
+            <ul class="menu__list">
+              <li class="menu__item"><a href="/html/index.html" class="menu__link">Catalog</a></li>
+              <li class="menu__item"><a href="/html/cart.html" class="menu__link">Cart</a></li>
+              <li id="login-li" class="menu__item"><a id="login-a" href="/html/login.html" class="menu__link">Login</a></li>
+              <li id="register-li" class="menu__item"><a id="register-a" href="/html/register.html" class="menu__link">Register</a></li>
+            </ul>
+          </nav>
+          <!-- <div class="header__button">
+            <a href="/html/add_car.html" class="button-add-car button-blue">Add car</a>
+          </div> -->
+        </div>
+        <div class="header__hr">
+          <hr>
+        </div>  
+      </header>
+      <main class="main">
+        <section class="register-section sign-section">
+          <div class="sign-section__container">
+            <form class="sign-section__content">
+              <div class="block-sign">
+                <div class="block-sign__title title">
+                  <h1>Sign in</h1>
+                  <div class="title__sub">
+                    <h2>Haven't got account yet?</h2>
+                    <a href="/html/register.html">Register here</a>
+                  </div>
+                </div>
+                <div id="sign-in-form" class="block-sign__form form">
+                  <div class="form-item">
+                    <p>Username</p>
+                    <input id="username" name="username" placeholder="enter username:" required/>
+                  </div>
+                  <div class="form-item">
+                    <p>Password</p>
+                    <input id="password" name="password" placeholder="enter password:" required/>
+                  </div>
+                  <div class="form__checkbox">
+                    <input id="agree" type="checkbox">
+                      <span class="checkmark"></span>
+                    <h2>
+                      By singing up you agree to receive updates and 
+                      special Offers</h2>
+                  </div>
+                </div>
+              </div>
+              <div class="button-submit">
+                <a href="#" class="sign-section__button button-blue">Submit</a>
+              </div>
+            </form>            
+          </div>
+        </section>
+        <div class="sign-section__image">
+          <img src="/assets/registration/registration_logo.png" alt="Registration logo">
+        </div>
+      </main>
+      <footer>
+
+      </footer>
+      </div>
+    </div>
+  </body>
+</html>
+<script type="module" src="/js/submit_login.js"></script>
