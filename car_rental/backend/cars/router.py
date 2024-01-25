@@ -6,6 +6,7 @@ from sqlalchemy import exc
 from sqlalchemy import desc
 from database import get_async_session
 from .cars import car
+from .stripe import create_new_car_plan
 from .schemas import CarCreate, CarRead
 
 
@@ -19,13 +20,15 @@ router = APIRouter(
 async def create_car(new_car: CarCreate, session: AsyncSession = Depends(get_async_session)):
     try:
         stmt = insert(car).values(**new_car.dict())
+        plan_id = create_new_car_plan(new_car.day_price*100*3)
+        print(plan_id)
         await session.execute(stmt)
         await session.commit()
     except Exception as e:
         print(type(e))
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
-    return JSONResponse(content={"message": "Car succesfully created"}, status_code=200)
+    return JSONResponse(content={"message": "Car succesfully created", "plan_id": plan_id}, status_code=200)
 
 
 @router.put("/update_car/{car_id}")
@@ -108,7 +111,6 @@ async def get_cars_created_by_user(user_id: int, brand="", model="", category=""
         result = await session.execute(query)
         carlist = [dict(r._mapping) for r in result]
         for item in carlist:
-            del item["owner_id"]
             del item["seats_count"]
             del item["registration_plate"]
         res = [{"message": "Cars data received"}]

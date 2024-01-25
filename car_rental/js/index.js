@@ -93,6 +93,12 @@ async function FillAllSortSets() {
 FillAllSortSets();
 
 
+function SetCarsCount(count) {
+    var preview = document.getElementById("section-preview");
+    preview.innerHTML = `Now you can choose one of ${count} cars for rent here`;
+}
+
+
 function ConfigureUrl() {
     var brand = document.getElementById("brand").value;
     var model = document.getElementById("model").value;
@@ -130,7 +136,7 @@ async function GetCars(url) {
     let result_cars = await response_cars.json();
     console.log(result_cars);
 
-    let response_rental_deal = await fetch(`http://127.0.0.1:8000/rental_deal/${localStorage.getItem('user_id')}`, {
+    let response_rental_deal = await fetch(`http://127.0.0.1:8000/rental_deal/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -146,15 +152,17 @@ async function GetCars(url) {
         if(item.hasOwnProperty('message')){
             continue
         }
-        rental_deal_ids.push(item.id);
+        rental_deal_ids.push(item.car_id);
     }
 
     var ul = document.querySelector(".search-content__list");
     ul.innerHTML = "";
 
+    var cars_count = 0;
+
     for (let item of result_cars){
 
-        if(item.hasOwnProperty('message')) { continue; }
+        if(rental_deal_ids.includes(item.id) || item.hasOwnProperty('message')) { continue; }
 
         var li = document.createElement("li");
         li.setAttribute("class", "search-list__item");
@@ -189,7 +197,10 @@ async function GetCars(url) {
         li.appendChild(div2);
 
         ul.appendChild(li);
+        cars_count++;
     }
+
+    SetCarsCount(cars_count);
 
     const carImages = document.querySelectorAll('.car_image');
 

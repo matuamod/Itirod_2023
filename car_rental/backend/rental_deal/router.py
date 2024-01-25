@@ -8,6 +8,7 @@ from .rental_deal import rental_deal
 from users import user
 from cars import car as car
 from .schemas import RentalDeal
+from .stripe import create_rental_plan
 
 
 router = APIRouter(
@@ -21,13 +22,15 @@ async def create_rental_deal(new_rent: RentalDeal, session: AsyncSession = Depen
     try:
         stmt = insert(rental_deal).values(**new_rent.dict())
         print(stmt)
+        plan_id = create_rental_plan(new_rent.total_price*100)
+        print(plan_id)
         await session.execute(stmt)
         await session.commit()
     except Exception as e:
         print(type(e))
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
-    return JSONResponse(content={"message": "Rental deal succesfully created"}, status_code=200)
+    return JSONResponse(content={"message": "Rental deal succesfully created", "plan_id": plan_id}, status_code=200)
 
 
 
@@ -113,6 +116,35 @@ async def get_user_rental_deals(user_id: int, brand="", model="", category="", f
             
         res = [{"message": "User rental deal data received"}]
         res.extend(carlist)
+        return JSONResponse(content=res, status_code=200)  
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    
+    
+@router.get("/")
+async def get_all_rental_deals(session: AsyncSession = Depends(get_async_session)):
+    try:
+        count_rental_deals = await session.scalar(select(func.count()).select_from(rental_deal))
+        if count_rental_deals == 0:
+            return JSONResponse(content=[{"message": "There is 0 rental deals now"}], status_code=200)
+        
+        query = select(rental_deal)
+        result = await session.execute(query)
+        rental_deal_list = [dict(r._mapping) for r in result]
+        for item in rental_deal_list:
+            del item["id"]
+            del item["user_id"]
+            del item["start_date"]
+            del item["end_date"]
+            del item["reception_point"]
+            del item["issue_point"]
+            del item["total_price"]
+        res = [{"message": "Rental deals data received"}]
+        res.extend(rental_deal_list)
+        if len(res) == 1:
+            return JSONResponse(content=[{"message": "0 rental deals"}], status_code=200)  
         return JSONResponse(content=res, status_code=200)  
     except Exception as e:
         print(type(e))

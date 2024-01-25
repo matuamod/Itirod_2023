@@ -65,8 +65,8 @@ class WebSocket(HTTPConnection):
             message_type = message["type"]
             if message_type not in {"websocket.accept", "websocket.close"}:
                 raise RuntimeError(
-                    'Expected ASGI message "websocket.connect", '
-                    f"but got {message_type!r}"
+                    'Expected ASGI message "websocket.accept" or '
+                    f'"websocket.close", but got {message_type!r}'
                 )
             if message_type == "websocket.close":
                 self.application_state = WebSocketState.DISCONNECTED
@@ -102,7 +102,7 @@ class WebSocket(HTTPConnection):
 
     def _raise_on_disconnect(self, message: Message) -> None:
         if message["type"] == "websocket.disconnect":
-            raise WebSocketDisconnect(message["code"])
+            raise WebSocketDisconnect(message["code"], message.get("reason"))
 
     async def receive_text(self) -> str:
         if self.application_state != WebSocketState.CONNECTED:
@@ -111,7 +111,7 @@ class WebSocket(HTTPConnection):
             )
         message = await self.receive()
         self._raise_on_disconnect(message)
-        return message["text"]
+        return typing.cast(str, message["text"])
 
     async def receive_bytes(self) -> bytes:
         if self.application_state != WebSocketState.CONNECTED:
@@ -120,7 +120,7 @@ class WebSocket(HTTPConnection):
             )
         message = await self.receive()
         self._raise_on_disconnect(message)
-        return message["bytes"]
+        return typing.cast(bytes, message["bytes"])
 
     async def receive_json(self, mode: str = "text") -> typing.Any:
         if mode not in {"text", "binary"}:
@@ -168,7 +168,7 @@ class WebSocket(HTTPConnection):
     async def send_json(self, data: typing.Any, mode: str = "text") -> None:
         if mode not in {"text", "binary"}:
             raise RuntimeError('The "mode" argument should be "text" or "binary".')
-        text = json.dumps(data)
+        text = json.dumps(data, separators=(",", ":"))
         if mode == "text":
             await self.send({"type": "websocket.send", "text": text})
         else:

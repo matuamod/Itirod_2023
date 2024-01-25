@@ -1,4 +1,4 @@
-#!/Users/matuamod/Documents/code/Itirod_2023/car_rental/backend/venv/bin/python3.11
+#!/Users/matuamod/Documents/code/third_cource/Itirod_2023/car_rental/backend/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys

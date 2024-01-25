@@ -29,7 +29,7 @@ async function GetUser() {
     }
 }
 
-await GetUser();
+GetUser();
 
 
 async function ValidateUserUpdate() {

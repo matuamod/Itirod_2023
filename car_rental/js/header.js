@@ -8,6 +8,20 @@ export async function Login() {
         });
         let result = await response.json();
 
+        var menuList = document.querySelector(".menu__list");
+
+        var cartLi = document.createElement("li");
+        cartLi.setAttribute("id", "cart-li");
+        cartLi.setAttribute("class", "menu__item");
+        var cartA = document.createElement("a");
+        cartA.setAttribute("id", "cart-a");
+        cartA.setAttribute("href", "/html/cart.html");
+        cartA.setAttribute("class", "menu__link");
+        cartA.innerHTML = "Cart";
+        cartLi.appendChild(cartA);
+
+        menuList.insertBefore(cartLi, document.getElementById("login-li"));
+
         var logoutLi = document.getElementById("login-li");
         var usernameLi = document.getElementById("register-li");
 
@@ -28,7 +42,6 @@ export async function Login() {
 
         if (result.is_landlord) {
             var headerContainer = document.querySelector(".header__container");
-            var menuList = document.querySelector(".menu__list");
    
             var landlordCarsLi = document.createElement("li");
             landlordCarsLi.setAttribute("id", "landlord-cars-li");
@@ -99,6 +112,8 @@ export function Logout() {
                 
                 var headerButton = document.querySelector(".header__button");
                 var landlordCars = document.getElementById("landlord-cars-li");
+                var cart = document.getElementById("cart-li");
+                cart.remove();
 
                 if (headerButton) {
                     headerButton.remove();

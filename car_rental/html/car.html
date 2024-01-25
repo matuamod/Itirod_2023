@@ -24,7 +24,7 @@
           <nav class="header__menu menu">
             <ul class="menu__list">
               <li class="menu__item"><a href="/html/index.html" class="menu__link">Catalog</a></li>
-              <li class="menu__item"><a href="/html/cart.html" class="menu__link">Cart</a></li>
+              <!-- <li class="menu__item"><a href="/html/cart.html" class="menu__link">Cart</a></li> -->
               <li id="login-li" class="menu__item"><a id="login-a" href="/html/login.html" class="menu__link">Login</a></li>
               <li id="register-li" class="menu__item"><a id="register-a" href="/html/register.html" class="menu__link">Register</a></li>
             </ul>
@@ -63,9 +63,9 @@
                     <div class="inf__calculate">
                       <span>Calculate :</span>
                       <span>from</span>
-                      <input class="start_date" type="date" id="start" name="trip-start" min="2023-01-01" max="2023-12-31">
+                      <input class="start_date" type="date" id="start" name="trip-start" min="2024-01-01" max="2025-12-31">
                       <span>to</span>
-                      <input class="end_date" type="date" id="end" name="trip-start" min="2023-01-01" max="2023-12-31">
+                      <input class="end_date" type="date" id="end" name="trip-start" min="2024-01-01" max="2025-12-31">
                     </div>
                     <div class="inf__destination">
                       <span>Locations :</span>
@@ -92,6 +92,7 @@
         </section>
       </main>
       <script type="module" src="/js/car.js"></script>
+      <script src="https://js.stripe.com/v3/"></script>
       </div>
     </div>
   </body>

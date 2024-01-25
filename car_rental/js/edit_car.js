@@ -42,7 +42,7 @@ async function GetCar() {
     SetPhotoItem(result_car.third_photo_url, "third_photo_warning", "third_photo_url");
 }
 
-await GetCar();
+GetCar();
 
 const upload = Upload({ apiKey: "public_FW25bMB9XFDUGYefNCpbLpPopXM3" });
 

@@ -30,3 +30,4 @@ class CarRead(BaseModel):
     registration_plate : str
     day_price : int
     description : str
+

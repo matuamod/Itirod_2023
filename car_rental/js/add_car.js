@@ -4,7 +4,8 @@ import {Login, Logout} from './header.js';
 await Login();
 Logout();
 
-const upload = Upload({ apiKey: "public_FW25bMB9XFDUGYefNCpbLpPopXM3" });
+const upload = Upload({ apiKey: "public_12a1ynWGe8T2VyocVZmkqtwS3m9i" });
+// const upload = Upload({ apiKey: "free" });
 
 const button = document.querySelector('.button-save');
 
@@ -72,20 +73,6 @@ async function AddCar() {
         var third_photo_url = document.querySelector(".third-car-img").src;
     }
     
-    console.log(brand);
-    console.log(model);
-    console.log(category);
-    console.log(fuel_type);
-    console.log(seats_count);
-    console.log(color);
-    console.log(plate);
-    console.log(price);
-    console.log(first_photo_url);
-    console.log(second_photo_url);
-    console.log(third_photo_url);
-    console.log(description);
-    console.log(user_id);
-    
     let response = await fetch('http://127.0.0.1:8000/cars', {
         method: 'POST',
         headers: {
@@ -110,7 +97,24 @@ async function AddCar() {
     });
     let result = await response.json();
     console.log(result);
-    window.location.href='index.html';
+    // window.location.href='index.html';
+
+    var stripe = Stripe(
+        "pk_test_51OV92nFiAt0FTsnrjz5Pdd7Ysjg6qofpTbqtbaR8HCTMQcMdQoRFAVVHcPFPaURW7ObJWWOtASAx67hsd9FiAVnN00EOMSAOXf"
+    );
+
+    stripe.redirectToCheckout({
+    lineItems: [
+        {
+            price: result.plan_id,
+            quantity: 1,
+        },
+    ],
+    mode: "subscription",
+    successUrl: "http://127.0.0.1:5501/html/index.html",
+    }).then(function(result) {
+        alert(result);
+    });
 }
 
 

@@ -36,7 +36,7 @@ async function FillCarInf() {
     document.getElementById("car-card-title").innerHTML = `${result_car.description}`;
 }
 
-await FillCarInf();
+FillCarInf();
 
 
 async function CalculatePrice() {
@@ -107,13 +107,13 @@ async function CalculatePrice() {
         tax_price.innerHTML = "Tax: ";
         var tax_price_value = document.createElement("span");
         tax_price_value.setAttribute("id", "tax-price-value");
-        var tax = parseInt(rend * 0.1);
+        var tax = parseFloat(rend * 0.13);
         tax_price_value.innerHTML = `${tax}` + "$";
         rend_btn_block.appendChild(tax_price);
         rend_btn_block.appendChild(tax_price_value);
     } else {
         var tax_price_value = document.getElementById("tax-price-value");
-        var tax = parseInt(rend * 0.1);
+        var tax = parseFloat(rend * 0.13);
         tax_price_value.innerHTML = `${tax}` + "$";
     }
     
@@ -126,6 +126,12 @@ async function CalculatePrice() {
 async function RendCar() {
     if (!document.getElementById("rend-price")) {
         alert("Calculate total price for rend firstly");
+        return;
+    }
+
+    if (!localStorage.getItem("user_id")) {
+        alert("You should register to make a rend firstly");
+        window.location.replace('register.html');
         return;
     }
 
@@ -173,11 +179,30 @@ async function RendCar() {
         })
     });
     let result = await response.json();
-    alert(result.message)
+    // alert(result.message)
 
     if(result.message=="Rental deal succesfully created") {
-      console.log(result.id)
-      window.location.replace('index.html');
+      alert(result.message);
+      console.log(result.id);
+
+      var stripe = Stripe(
+        "pk_test_51OV92nFiAt0FTsnrjz5Pdd7Ysjg6qofpTbqtbaR8HCTMQcMdQoRFAVVHcPFPaURW7ObJWWOtASAx67hsd9FiAVnN00EOMSAOXf"
+      );
+
+      stripe.redirectToCheckout({
+        lineItems: [
+          {
+            price: result.plan_id,
+            quantity: 1,
+          },
+        ],
+        mode: "subscription",
+        successUrl: "http://127.0.0.1:5501/html/index.html",
+      }).then(function(result) {
+          alert(result);
+      });
+
+      // window.location.replace('index.html');
     }
 }
 

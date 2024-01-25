@@ -120,12 +120,13 @@ async function ValidateRegistration() {
         })
     });
     let result = await response.json();
+    console.log(result);
     alert(result.message)
 
     if(result.message=="User succesfully created") {
       console.log(result.id)
-      // localStorage.setItem("user_id", result.id)
-      Login(result.id, result.username);
+      localStorage.setItem("user_id", result.id)
+      // Login(result.id, result.username);
       window.location.replace('index.html');
     }
   }

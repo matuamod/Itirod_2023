@@ -93,6 +93,12 @@ async function FillAllSortSets() {
 FillAllSortSets();
 
 
+function SetCarsCount(count) {
+    var preview = document.getElementById("section-preview");
+    preview.innerHTML = `You can choose one of ${count} cars which you posted here`;
+}
+
+
 function ConfigureUrl() {
     var brand = document.getElementById("brand").value;
     var model = document.getElementById("model").value;
@@ -133,10 +139,12 @@ async function GetCars(url) {
     var ul = document.querySelector(".search-content__list");
     ul.innerHTML = "";
 
+    var cars_count = 0;
+
     for (let item of result_cars){
-        if(item.hasOwnProperty('message')){
-            continue
-        }
+        if (item.hasOwnProperty('message')) { continue; }
+
+        if (localStorage.getItem("user_id") != item.owner_id) { continue; }
 
         var li = document.createElement("li");
         li.setAttribute("class", "search-list__item");
@@ -190,7 +198,10 @@ async function GetCars(url) {
         li.appendChild(div2);
 
         ul.appendChild(li);
+        cars_count++;
     }
+
+    SetCarsCount(cars_count);
 }
 
 await GetCars(`http://127.0.0.1:8000/cars/user/${localStorage.getItem("user_id")}`);

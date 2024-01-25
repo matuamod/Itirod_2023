@@ -19,6 +19,11 @@ async def register_user(new_user: UserCreate, session: AsyncSession = Depends(ge
         stmt = insert(user).values(**new_user.dict())
         await session.execute(stmt)
         await session.commit()
+        
+        query = select(user).where(user.c.username == new_user.username)
+        result = await session.execute(query)
+        user_dict = [dict(r._mapping) for r in result][0]
+        password = user_dict.get('password')
     except exc.IntegrityError as e:
         print(type(e))
         print(e)
@@ -27,7 +32,8 @@ async def register_user(new_user: UserCreate, session: AsyncSession = Depends(ge
         print(type(e))
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
-    return JSONResponse(content={"message": "User succesfully created"}, status_code=200)
+    if(password == new_user.password):
+        return JSONResponse(content={"message": "User succesfully created", "id": user_dict.get('id')}, status_code=200)
 
 
 @router.post("/login")
