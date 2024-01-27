@@ -7,4 +7,4 @@ class RentalDeal(BaseModel):
     end_date : str
     reception_point : str
     issue_point : str
-    total_price : int
+    total_price : float

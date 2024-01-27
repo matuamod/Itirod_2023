@@ -81,9 +81,13 @@ async function CalculatePrice() {
     start_date = new Date(start_date);
     end_date = new Date(end_date);
 
-    var difference = (end_date.getTime() - start_date.getTime()) / (1000 * 3600 * 24);
+    var difference = (end_date.getTime() - start_date.getTime()) / (1000 * 3600 * 24) + 1;
 
     var rend_btn_block = document.querySelector(".rend_btn");
+
+    var total_price = document.getElementById("total-price-value");
+    var total = difference * result_car.day_price;
+    total_price.innerHTML = `${total}` + "$";
 
     if (!document.getElementById("rend-price")) {
         var rend_price = document.createElement("span");
@@ -91,13 +95,13 @@ async function CalculatePrice() {
         rend_price.innerHTML = "Rend: ";
         var rend_price_value = document.createElement("span");
         rend_price_value.setAttribute("id", "rend-price-value");
-        var rend = difference * result_car.day_price;
+        var rend =parseFloat((total * 0.87).toFixed(2));
         rend_price_value.innerHTML = `${rend}` + "$";
         rend_btn_block.appendChild(rend_price);
         rend_btn_block.appendChild(rend_price_value);
     } else {
         var rend_price_value = document.getElementById("rend-price-value");
-        var rend = difference * result_car.day_price;
+        var rend = parseFloat((total * 0.87).toFixed(2));
         rend_price_value.innerHTML = `${rend}` + "$";
     }
 
@@ -107,19 +111,16 @@ async function CalculatePrice() {
         tax_price.innerHTML = "Tax: ";
         var tax_price_value = document.createElement("span");
         tax_price_value.setAttribute("id", "tax-price-value");
-        var tax = parseFloat(rend * 0.13);
+        var tax = parseFloat((total * 0.13).toFixed(2));
         tax_price_value.innerHTML = `${tax}` + "$";
         rend_btn_block.appendChild(tax_price);
         rend_btn_block.appendChild(tax_price_value);
     } else {
         var tax_price_value = document.getElementById("tax-price-value");
-        var tax = parseFloat(rend * 0.13);
+        var tax = parseFloat((total * 0.13).toFixed(2));
         tax_price_value.innerHTML = `${tax}` + "$";
     }
     
-    var total_price = document.getElementById("total-price-value");
-    var total = rend + tax;
-    total_price.innerHTML = `${total}` + "$";
 }
 
 

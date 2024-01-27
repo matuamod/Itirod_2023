@@ -75,8 +75,7 @@ main {
 
 .title__sub a {
     color: var(--primary-color);
-    font-weight: lighter;
-    margin-left: 10px;
+    margin-left: 6px;
 }
 
 .title__sub a:hover {

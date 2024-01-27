@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Table, Date, Column, Integer, String, ForeignKey
+from sqlalchemy import MetaData, Table, Date, Column, Integer, String, ForeignKey, Float
 from users import user
 from cars import car
 
@@ -15,5 +15,5 @@ rental_deal = Table(
     Column("end_date", String(10), nullable=False),
     Column("reception_point", String(100), nullable=False),
     Column("issue_point", String(100), nullable=False),
-    Column("total_price", Integer),
+    Column("total_price", Float),
 )

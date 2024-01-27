@@ -22,7 +22,7 @@ async def create_rental_deal(new_rent: RentalDeal, session: AsyncSession = Depen
     try:
         stmt = insert(rental_deal).values(**new_rent.dict())
         print(stmt)
-        plan_id = create_rental_plan(new_rent.total_price*100)
+        plan_id = create_rental_plan(int(new_rent.total_price*100))
         print(plan_id)
         await session.execute(stmt)
         await session.commit()
@@ -34,11 +34,11 @@ async def create_rental_deal(new_rent: RentalDeal, session: AsyncSession = Depen
 
 
 
-@router.delete("/")
-async def delete_car_from_rental_deal(curr_rent: RentalDeal, session: AsyncSession = Depends(get_async_session)):
+@router.delete("/{car_id}")
+async def delete_rental_deal(car_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
         count_before = await session.scalar(select(func.count()).select_from(rental_deal))
-        stmt = delete(rental_deal).where((rental_deal.c.car_id == curr_rent.car_id) & (rental_deal.c.user_id == curr_rent.user_id))
+        stmt = delete(rental_deal).where(rental_deal.c.car_id == car_id)
         await session.execute(stmt)
         await session.commit()
         count_after = await session.scalar(select(func.count()).select_from(rental_deal))

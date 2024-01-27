@@ -172,6 +172,17 @@ async function GetCars(url) {
         var p3 = document.createElement("p");
         p3.setAttribute("class", "descr-wrap__price");
         p3.innerHTML = `${item.day_price}` + "$";
+        var deleteButton = document.createElement("button");
+        deleteButton.setAttribute("class", "delete-button");
+        deleteButton.setAttribute("id", `delete-button-${item.id}`);
+        deleteButton.innerHTML = "Stop Rent";
+        deleteButton.style.margin = "10px"
+        deleteButton.style.marginLeft = "30px"
+        deleteButton.style.padding = "5px"
+        deleteButton.style.borderRadius = "10px"
+        deleteButton.style.backgroundColor = "red";
+        deleteButton.style.color = "white";
+        p3.append(deleteButton);
         div2.appendChild(p1);
         div2.appendChild(p2);
         div2.appendChild(p3);
@@ -185,3 +196,33 @@ async function GetCars(url) {
 }
 
 await GetCars(`http://127.0.0.1:8000/rental_deal/${localStorage.getItem("user_id")}`);
+
+
+async function DeleteRentalDeal(carDeleteId) {
+    var car_id = carDeleteId.substring(14);
+
+    var confirmDelete = window.confirm("Are you sure you want to complete your lease?");
+    
+    if(confirmDelete) {
+        fetch(`http://127.0.0.1:8000/rental_deal/${car_id}`, {
+        method: 'DELETE',
+        })
+        .then(response => response.text()) 
+        .then(response => console.log(response))
+
+        location.reload();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
+const deleteButtons = document.querySelectorAll(".delete-button");
+
+for (let deleteButton of deleteButtons) {
+    deleteButton.addEventListener('click', async function(event) {
+        event.preventDefault();
+        await DeleteRentalDeal(this.id);
+    });
+}
+

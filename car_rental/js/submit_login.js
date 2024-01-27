@@ -15,7 +15,6 @@ async function CheckLogin() {
 
   var username = document.getElementById('username').value.trim();
   var password = document.getElementById('password').value.trim();
-  var agree = document.getElementById('agree').checked;
 
   console.log(username);
   console.log(password);
@@ -36,11 +35,6 @@ async function CheckLogin() {
   } else if (password.length > 50) {
     isValid = false;
     alert('Password field must be less than 50 characters.');
-  }
-
-  if (!agree) {
-    isValid = false;
-    alert('Agree checkbox must must be checked.');
   }
 
   let response = await fetch('http://127.0.0.1:8000/users/login', {
