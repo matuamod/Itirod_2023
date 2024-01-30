@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from users import router as router_user
 from cars import router as router_car
 from rental_deal import router as router_rental_deal
+from reviews import router as router_review
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -21,4 +22,5 @@ app.add_middleware(
 app.include_router(router_user)
 app.include_router(router_car)
 app.include_router(router_rental_deal)
+app.include_router(router_review)
 

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/styles/header.css" />
     <link rel="stylesheet" href="/styles/main.css" />
     <link rel="stylesheet" href="/styles/car.css" />
+    <link rel="stylesheet" href="/styles/reviews.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -70,9 +71,9 @@
                     <div class="inf__destination">
                       <span>Locations :</span>
                       <span>from</span>
-                      <input class="start_location" id="start" name="trip-start" placeholder="Location">
+                      <input class="start_location" id="start" name="trip-start" placeholder="Location" readonly>
                       <span>to</span>
-                      <input class="end_location" id="end" name="trip-start" placeholder="Location">
+                      <input class="end_location" id="end" name="trip-start" placeholder="Location" readonly>
                     </div>
                   </div>
                   <div class="car-card__rend-price rend-price">
@@ -86,6 +87,11 @@
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="review-content__review-card">
+                <div class="review-content__info"></div>
+                <ul class="review-content__list" id="reviewsList">      
+                </ul>
               </div>
             </article>
           </div>

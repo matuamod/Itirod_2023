@@ -1,0 +1,51 @@
+.review-content__info {
+    margin-left: 25px;
+    margin-top: 25px;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.review-content__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-list__item {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--card-color);
+    max-width: 100%;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 25px;
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.25);
+}
+
+.item__username {
+    max-height: 200px;
+    border-radius: 25px;
+}
+
+.comment__username {
+    margin: 16px; 
+    font-size: 32px;
+    font-weight: bold;   
+}
+
+.comment__text {
+    margin: 0 16px;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.comment__timestamp {
+    margin: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: end;
+}

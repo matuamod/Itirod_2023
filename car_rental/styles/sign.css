@@ -26,6 +26,10 @@ main {
 }
 
 .register-section {
+    padding: 25px 0px 100px 0px;
+}
+
+.login-section {
     padding: 70px 0px 100px 0px;
 }
 
@@ -95,6 +99,10 @@ main {
     margin-top: 25px;
 }
 
+.item-register {
+    margin-top: 20px;
+}
+
 .form-item p {
     font-size: 35px;
     font-weight: bold;
@@ -138,6 +146,10 @@ main {
     flex: 0 0 200px;
     display: flex;
     justify-content: center;
+}
+
+.submit-register {
+    margin-top: 25px;
 }
 
 .sign-section__button {

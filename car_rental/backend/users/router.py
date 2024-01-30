@@ -86,7 +86,6 @@ async def update_user(user_id: int, update_user: UserUpdate , session: AsyncSess
     return JSONResponse(content={"message": "Wrong password"}, status_code=400)
 
 
-
 @router.get("/{user_id}")
 async def get_user(user_id: int, session: AsyncSession = Depends(get_async_session)):
     try:

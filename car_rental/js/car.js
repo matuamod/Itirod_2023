@@ -33,6 +33,9 @@ async function FillCarInf() {
     document.getElementById("second-photo").src = result_car.sec_image_url;
     document.getElementById("third-photo").src = result_car.third_image_url;
 
+    document.querySelector(".start_location").value = `${result_car.owner_address}`;
+    document.querySelector(".end_location").value = `${result_car.owner_address}`;
+
     document.getElementById("car-card-title").innerHTML = `${result_car.description}`;
 }
 
@@ -206,6 +209,68 @@ async function RendCar() {
       // window.location.replace('index.html');
     }
 }
+
+
+function createReviewListItem(review) {
+    var li = document.createElement("li");
+    li.setAttribute("class", "review-list__item");
+
+    var div1 = document.createElement("div");
+    div1.setAttribute("class", "item__username");
+    var p1 = document.createElement("p");
+    p1.setAttribute("class", "comment__username");
+    p1.textContent = review.username;
+    div1.appendChild(p1);
+    li.appendChild(div1);
+
+    var div2 = document.createElement("div");
+    div2.setAttribute("class", "item__comment");
+    var p2 = document.createElement("p");
+    p2.setAttribute("class", "comment__text");
+    p2.textContent = review.message;
+    div2.appendChild(p2);
+    li.appendChild(div2);
+
+    var div3 = document.createElement("div");
+    div1.setAttribute("class", "item__timestamp");
+    var p3 = document.createElement("p");
+    p3.setAttribute("class", "comment__timestamp");
+    p3.textContent = review.created_at;
+    div3.appendChild(p3);
+    li.appendChild(div3);
+
+    return li;
+}
+
+
+async function GetReviews() {
+    let response_reviews = await fetch(`http://127.0.0.1:8000/reviews/${localStorage.getItem('car_id')}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    let result_reviews = await response_reviews.json();
+
+    let infoItem = result_reviews.shift();
+    var infoDiv = document.querySelector(".review-content__info");
+    var div = document.createElement("div");
+    div.setAttribute("class", "review-info");
+    var strong = document.createElement("strong");
+    strong.textContent = infoItem.message;
+    div.appendChild(strong);
+    infoDiv.appendChild(div);
+
+    reviewsList.innerHTML = '';
+
+    result_reviews.forEach(review => {
+        let listItem = createReviewListItem(review);
+        reviewsList.appendChild(listItem);
+    });
+}
+
+
+GetReviews();
 
 
 const buttonCalculate = document.getElementById("btn-calculate");

@@ -6,6 +6,8 @@
     --slider-pointer-color: red;
     --card-color: white;
     --card-hover-color: rgb(144, 142, 142);
+    --button-color: #325aec;
+    --button-text-color: #fbf7f7;
 }
 
 main {
@@ -207,4 +209,46 @@ main {
     font-size: 36px;
     font-weight: bold;
     text-align: right;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--card-color);
+    padding: 20px;
+    z-index: 1001;
+    text-align: center;
+    max-width: 80%;
+    width: 600px;
+    height: 200px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 25px;
+    border-color: var(--primary-color);
+}
+
+.modal label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.modal-buttons button {
+    margin: 0 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: var(--button-color);
+    color: var(--button-text-color);
+}
+
+#comment {
+    width: 100%;
+    height: 55%;
+    margin: 16px 0px;
+    box-sizing: border-box;
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--primary-color);
 }

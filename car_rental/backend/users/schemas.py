@@ -5,6 +5,8 @@ class UserCreate(BaseModel):
     password : str
     email : str
     telephone : str
+    address : str
+    license : str
     date_of_birth : str
     is_landlord : bool
 

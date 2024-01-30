@@ -41,7 +41,7 @@
           <div class="sign-section__container">
             <form class="sign-section__content">
               <div class="block-sign">
-                <div class="block-sign__title title">
+                <div class="block-sign__title title title-register">
                   <h1>Sign up</h1>
                   <div class="title__sub">
                     <h2>Already have account?</h2>
@@ -49,34 +49,42 @@
                   </div>
                 </div>
                 <div id="sign-up-form" class="block-sign__form form">
-                  <div class="form-item">
+                  <div class="form-item item-register">
                     <p>Username</p>
                     <input id="username" name="username" placeholder="enter username:" required/>
                   </div>
-                  <div class="form-item">
+                  <div class="form-item item-register">
                     <p>Password</p>
                     <input id="password" name="password" placeholder="enter password:" required/>
                   </div>
-                  <div class="form-item">
-                    <p>email</p>
+                  <div class="form-item item-register">
+                    <p>Email</p>
                     <input id="email" name="email" placeholder="enter email:" required/>
                   </div>
-                  <div class="form-item">
+                  <div class="form-item item-register">
                     <p>Telephone</p>
                     <input id="telephone" name="telephone" placeholder="enter telephone:" required/>
                   </div>
-                  <div class="form-item">
-                    <p>date birth</p>
+                  <div class="form-item item-register">
+                    <p>Address</p>
+                    <input id="address" name="address" placeholder="enter address:" required/>
+                  </div>
+                  <div class="form-item item-register">
+                    <p>License</p>
+                    <input id="license" name="license" placeholder="enter license:" required/>
+                  </div>
+                  <div class="form-item item-register">
+                    <p>Date birth</p>
                     <input type="date" id="date_of_birth" name="trip-start" value="2023-07-22" min="1900-01-01" max="2023-12-31" required/>
                   </div>
-                  <div class="form__checkbox">
+                  <div class="form__checkbox item-register">
                     <input id="is_landlord" type="checkbox">
                       <span class="checkmark"></span>
                     <h2>
                       Become a landlord
                     </h2>
                   </div>
-                  <div class="form__checkbox">
+                  <div class="form__checkbox item-register">
                     <input id="agree" type="checkbox">
                       <span class="checkmark"></span>
                     <!-- <h2>
@@ -89,7 +97,7 @@
                   </div>
                 </div>
               </div>
-              <div class="button-submit">
+              <div class="button-submit submit-register">
                 <a href="/html/index.html"class="sign-section__button button-blue">Submit</a>
               </div>
             </form>            

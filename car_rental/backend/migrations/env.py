@@ -11,6 +11,7 @@ from config import DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASS
 from users import metadata as metadata_users
 from cars import metadata as metadata_cars
 from rental_deal import metadata as metadata_rental_deal
+from reviews import metadata as metadata_reviews
 
 
 # this is the Alembic Config object, which provides
@@ -35,7 +36,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [metadata_users, metadata_cars, metadata_rental_deal]
+target_metadata = [metadata_users, metadata_cars, metadata_rental_deal, metadata_reviews]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

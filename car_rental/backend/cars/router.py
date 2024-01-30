@@ -6,6 +6,7 @@ from sqlalchemy import exc
 from sqlalchemy import desc
 from database import get_async_session
 from .cars import car
+from users import user
 from .stripe import create_new_car_plan
 from .schemas import CarCreate, CarRead
 
@@ -49,7 +50,6 @@ async def update_car(car_id: int, car_update: CarCreate , session: AsyncSession 
         return JSONResponse(content={"message": "Error"}, status_code=400)
 
 
-
 @router.delete("/{car_id}")
 async def delete_car(car_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
@@ -67,15 +67,21 @@ async def delete_car(car_id: int, session: AsyncSession = Depends(get_async_sess
     return JSONResponse(content={"message": "Car succesfully deleted"}, status_code=200)
 
 
-
 @router.get("/{car_id}", response_model = CarRead)
 async def get_car(car_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
-        query = select(car).where(car.c.id == car_id)
-        result = await session.execute(query)
-        car_dict = [dict(r._mapping) for r in result][0]
-        res = {"message": "Flat data received"}
+        car_query = select(car).where(car.c.id == car_id)
+        car_result = await session.execute(car_query)
+        car_dict = [dict(r._mapping) for r in car_result][0]
+        
+        user_query = select(user.c.address).where(user.c.id == car_dict["owner_id"])
+        user_result = await session.execute(user_query)
+        user_address = user_result.scalar_one()
+
+        car_dict["owner_address"] = user_address
         del car_dict["owner_id"]
+        
+        res = {"message": "Flat data received"}
         res.update(car_dict)
         return JSONResponse(content=res, status_code=200)  
     except IndexError as e:
@@ -86,8 +92,7 @@ async def get_car(car_id: int, session: AsyncSession = Depends(get_async_session
         print(type(e))
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
-    
-    
+       
 
 @router.get("/user/{user_id}")
 async def get_cars_created_by_user(user_id: int, brand="", model="", category="", fuel="", color="", price=0, session: AsyncSession = Depends(get_async_session)):

@@ -31,6 +31,8 @@ async function ValidateRegistration() {
   var password = document.getElementById('password').value.trim();
   var email = document.getElementById('email').value.trim();
   var telephone = document.getElementById('telephone').value.trim();
+  var address = document.getElementById('address').value.trim();
+  var license = document.getElementById('license').value.trim();
   var dateOfBirth = new Date(document.getElementById('date_of_birth').value);
   var isLandlordAgree = document.getElementById('is_landlord').checked;
   var isLandlord = false;
@@ -76,6 +78,25 @@ async function ValidateRegistration() {
     alert('Telephone field must include only digits.');
   }
 
+  if (!address) {
+    isValid = false;
+    alert('Address field is required.');
+  } else if (address.length > 100) {
+    isValid = false;
+    alert('Address field must be less than 100 characters.');
+  }
+
+  if (!license) {
+    isValid = false;
+    alert('License number field is required.');
+  } else if (!/^[A-Z]{4}\d+$/.test(license)) {
+    isValid = false;
+    alert('License number must start with four uppercase letters, followed by digits only.');
+  } else if (license.length !== 10) {
+    isValid = false;
+    alert('License number must be 10 characters long.');
+  }
+
   if (!dateOfBirth) {
     isValid = false;
     alert('Invalid date of birth.');
@@ -102,6 +123,8 @@ async function ValidateRegistration() {
     console.log(password);
     console.log(email);
     console.log(telephone);
+    console.log(address);
+    console.log(license);
     console.log(formatDate(dateOfBirth));
 
     let response = await fetch('http://127.0.0.1:8000/users/registration', {
@@ -115,6 +138,8 @@ async function ValidateRegistration() {
           'password': `${password}`, 
           'email': `${email}`,
           'telephone': `${telephone}`,
+          'address': `${address}`,
+          'license': `${license}`,
           'date_of_birth': `${formatDate(dateOfBirth)}`,
           'is_landlord': `${isLandlord}`,
         })
