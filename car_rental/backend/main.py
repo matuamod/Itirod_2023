@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from stuff import router as router_stuff
 from users import router as router_user
 from cars import router as router_car
 from rental_deal import router as router_rental_deal
@@ -19,6 +20,7 @@ app.add_middleware(
 )
 
 
+app.include_router(router_stuff)
 app.include_router(router_user)
 app.include_router(router_car)
 app.include_router(router_rental_deal)

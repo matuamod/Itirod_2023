@@ -153,6 +153,7 @@ main {
 }
 
 .sign-section__button {
+    margin: 30px;
     display: flex;
     justify-content: flex-end;
     font-size: 30px;
@@ -176,3 +177,24 @@ main {
 .sign-section__image img {
     max-width: 100%;
 }
+
+.admin-section {
+    margin: 120px auto;
+}
+
+.admin-page {
+    text-align: center;
+}
+
+.block-sign__content {
+    padding: 0 50px;
+    border-radius: 50px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--primary-color);
+}
+
+.stuff-button-submit{
+    margin-top: 5px;
+}
+

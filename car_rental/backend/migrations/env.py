@@ -8,6 +8,7 @@ from alembic import context
 from alembic import context
 
 from config import DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASS
+from stuff import metadata as metadata_stuff
 from users import metadata as metadata_users
 from cars import metadata as metadata_cars
 from rental_deal import metadata as metadata_rental_deal
@@ -36,7 +37,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [metadata_users, metadata_cars, metadata_rental_deal, metadata_reviews]
+target_metadata = [metadata_stuff, metadata_users, metadata_cars, metadata_rental_deal, metadata_reviews]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
