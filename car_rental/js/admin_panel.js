@@ -394,6 +394,23 @@ async function renderExistingUsers() {
     let users = dict.data;
     console.log(users);
 
+    var createItem = document.createElement('li');
+    createItem.classList.add('list-item');
+
+    var createItemButton = document.createElement('div');
+    createItemButton.classList.add('create-item-button');
+
+    var createButton = document.createElement('button');
+    createButton.classList.add('form-button');
+    createButton.classList.add('create-button');
+    createButton.setAttribute('id', `create-button`);
+    createButton.textContent = 'Create User';
+    createButton.addEventListener('click', () => createUser());
+
+    createItemButton.appendChild(createButton);
+    createItem.appendChild(createItemButton);
+    existingUsersList.appendChild(createItem);
+
     users.forEach(user => {
         var listItem = document.createElement('li');
         listItem.classList.add('list-item');
@@ -532,36 +549,43 @@ async function updateUser(userId) {
     var usernameInput = document.createElement('input');
     usernameInput.setAttribute('id', 'modal-username-input');
     usernameInput.type = 'text';
+    usernameInput.placeholder = 'Enter username:';
     usernameInput.value = result.username;
 
     var passwordInput = document.createElement('input');
     passwordInput.setAttribute('id', 'modal-password-input');
     passwordInput.type = 'text';
+    passwordInput.placeholder = 'Enter password:';
     passwordInput.value = result.password;
 
     var emailInput = document.createElement('input');
     emailInput.setAttribute('id', 'modal-email-input');
     emailInput.type = 'text';
+    emailInput.placeholder = 'Enter email:';
     emailInput.value = result.email;
 
     var telephoneInput = document.createElement('input');
     telephoneInput.setAttribute('id', 'modal-telephone-input');
     telephoneInput.type = 'text';
+    telephoneInput.placeholder = 'Enter telephone:';
     telephoneInput.value = result.telephone;
 
     var addressInput = document.createElement('input');
     addressInput.setAttribute('id', 'modal-address-input');
     addressInput.type = 'text';
+    addressInput.placeholder = 'Enter address';
     addressInput.value = result.address;
 
     var licenseInput = document.createElement('input');
     licenseInput.setAttribute('id', 'modal-license-input');
     licenseInput.type = 'text';
+    licenseInput.placeholder = 'Enter license:';
     licenseInput.value = result.license;
 
     var dateOfBirthInput = document.createElement('input');
     dateOfBirthInput.setAttribute('id', 'modal-date-of-birth-input');
     dateOfBirthInput.type = 'text';
+    dateOfBirthInput.placeholder = 'Enter date of birth:';
     dateOfBirthInput.value = result.date_of_birth;
 
     var isLandlordDiv = document.createElement('div');
@@ -713,6 +737,201 @@ async function updateUser(userId) {
 
     document.body.appendChild(modalBackground);
 
+}
+
+
+async function createUser() {  
+    var modalBackground = document.createElement('div');
+    modalBackground.classList.add('modal-background');
+
+    var modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    var modalHeader = document.createElement('h2');
+    modalHeader.textContent = 'Create User';
+
+    var usernameInput = document.createElement('input');
+    usernameInput.setAttribute('id', 'modal-username-input');
+    usernameInput.type = 'text';
+    usernameInput.placeholder = 'Enter username:';
+
+    var passwordInput = document.createElement('input');
+    passwordInput.setAttribute('id', 'modal-password-input');
+    passwordInput.type = 'text';
+    passwordInput.placeholder = 'Enter password:';
+
+    var emailInput = document.createElement('input');
+    emailInput.setAttribute('id', 'modal-email-input');
+    emailInput.type = 'text';
+    emailInput.placeholder = 'Enter email:';
+
+    var telephoneInput = document.createElement('input');
+    telephoneInput.setAttribute('id', 'modal-telephone-input');
+    telephoneInput.type = 'text';
+    telephoneInput.placeholder = 'Enter telephone:';
+
+    var addressInput = document.createElement('input');
+    addressInput.setAttribute('id', 'modal-address-input');
+    addressInput.type = 'text';
+    addressInput.placeholder = 'Enter address';
+
+    var licenseInput = document.createElement('input');
+    licenseInput.setAttribute('id', 'modal-license-input');
+    licenseInput.type = 'text';
+    licenseInput.placeholder = 'Enter license:';
+
+    var dateOfBirthInput = document.createElement('input');
+    dateOfBirthInput.setAttribute('id', 'modal-date-of-birth-input');
+    dateOfBirthInput.type = 'text';
+    dateOfBirthInput.placeholder = 'Enter date of birth:';
+
+    var isLandlordDiv = document.createElement('div');
+    isLandlordDiv.setAttribute('id', 'is-landlord-div');
+    isLandlordDiv.style.display = 'flex';
+    
+    var ownerStatusLabel = document.createElement('label');
+    ownerStatusLabel.setAttribute('for', 'modal-is-landlord-checkbox');
+    ownerStatusLabel.textContent = 'Owner:';
+
+    var isLandlordCheckbox = document.createElement('input');
+    isLandlordCheckbox.setAttribute('id', 'modal-is-landlord-checkbox');
+    isLandlordCheckbox.type = 'checkbox';
+
+    isLandlordDiv.appendChild(ownerStatusLabel);
+    isLandlordDiv.appendChild(isLandlordCheckbox);
+
+    var okButton = document.createElement('button');
+    okButton.classList.add('ok-button');
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', async function () {
+        var modalUserUsername = document.getElementById('modal-username-input').value.trim();
+        var modalUserPassword = document.getElementById('modal-password-input').value.trim();
+        var modalUserEmail = document.getElementById('modal-email-input').value.trim();
+        var modalUserTelephone = document.getElementById('modal-telephone-input').value.trim();
+        var modalUserAddress = document.getElementById('modal-address-input').value.trim();
+        var modalUserLicense = document.getElementById('modal-license-input').value.trim();
+        var modalUserDateOfBirth = document.getElementById('modal-date-of-birth-input').value.trim();
+        var modalIsLandlord = document.getElementById('modal-is-landlord-checkbox').checked;
+        var isLandlord = false;
+
+        let isValid = true;
+
+        if (!modalUserUsername) {
+            isValid = false;
+            alert('Username field is required.');
+        } else if (modalUserUsername.length > 50) {
+            isValid = false;
+            alert('Username field must be less than 50 characters.');
+        }
+
+        if (!modalUserPassword) {
+            isValid = false;
+            alert('Password field is required.');
+        } else if (modalUserPassword.length > 50) {
+            isValid = false;
+            alert('Password field must be less than 50 characters.');
+        }
+
+        if (!modalUserEmail) {
+            isValid = false;
+            alert('Email field is required.');
+        } else if (modalUserEmail.length > 100) {
+            isValid = false;
+            alert('Email field must be less than 100 characters.');
+        } else if (!modalUserEmail.includes('@') || !modalUserEmail.includes('.com')) {
+            isValid = false;
+            alert('Email field must include "@" and ".com".');
+        }
+
+        if (!modalUserTelephone) {
+            isValid = false;
+            alert('Telephone field is required.');
+        } else if (!modalUserTelephone.startsWith('+')) {
+            isValid = false;
+            alert('Telephone field must start with "+" symbol.');
+        } else if (isNaN(modalUserTelephone.slice(1))) {
+            isValid = false;
+            alert('Telephone field must include only digits.');
+        }
+
+        if (!modalUserAddress) {
+            isValid = false;
+            alert('Address field is required.');
+        } else if (modalUserAddress.length > 100) {
+            isValid = false;
+            alert('Address field must be less than 100 characters.');
+        }
+
+        if (!modalUserLicense) {
+            isValid = false;
+            alert('License number field is required.');
+        } else if (!/^[A-Z]{4}\d+$/.test(modalUserLicense)) {
+            isValid = false;
+            alert('License number must start with four uppercase letters, followed by digits only.');
+        } else if (modalUserLicense.length !== 10) {
+            isValid = false;
+            alert('License number must be 10 characters long.');
+        }
+
+        if (!modalUserDateOfBirth) {
+            isValid = false;
+            alert('Invalid date of birth.');
+        } else {
+            const cutoffDate = new Date();
+            cutoffDate.setFullYear(cutoffDate.getFullYear() - 18);
+            if (modalUserDateOfBirth > cutoffDate) {
+                isValid = false;
+                alert('You must be at least 18 years old to be updated.');
+            }
+        }
+
+        if (modalIsLandlord) { isLandlord = true; }
+
+        if(isValid) {
+            let response = await fetch('http://127.0.0.1:8000/users/registration', {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'username': `${modalUserUsername}`,
+                    'password': `${modalUserPassword}`, 
+                    'email': `${modalUserEmail}`,
+                    'telephone': `${modalUserTelephone}`,
+                    'address': `${modalUserAddress}`,
+                    'license': `${modalUserLicense}`,
+                    'date_of_birth': `${modalUserDateOfBirth}`,
+                    'is_landlord': `${isLandlord}`,
+                })
+            });
+            let result = await response.json();
+            console.log(result);    
+        }
+        closeModal();
+        renderExistingUsers();
+    });
+
+    var cancelButton = document.createElement('button');
+    cancelButton.classList.add('cancel-button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', closeModal);
+
+    modal.appendChild(modalHeader);
+    modal.appendChild(usernameInput);
+    modal.appendChild(passwordInput);
+    modal.appendChild(emailInput);
+    modal.appendChild(telephoneInput);
+    modal.appendChild(addressInput);
+    modal.appendChild(licenseInput);
+    modal.appendChild(dateOfBirthInput);
+    modal.appendChild(isLandlordDiv);
+    modal.appendChild(okButton);
+    modal.appendChild(cancelButton);
+
+    modalBackground.appendChild(modal);
+
+    document.body.appendChild(modalBackground);
 }
 
 
