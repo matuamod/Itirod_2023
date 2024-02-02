@@ -108,10 +108,6 @@ async function EditCar() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            "owner_id" : `${user_id}`,
-            "first_image_url" : `${first_photo_url}`,
-            "sec_image_url" : `${second_photo_url}`,
-            "third_image_url" : `${third_photo_url}`,
             "brand" : `${brand}`,
             "model" : `${model}`,
             "category" : `${category}`,
@@ -120,6 +116,9 @@ async function EditCar() {
             "color" : `${color}`,
             "registration_plate" : `${plate}`,
             "day_price" : `${price}`,
+            "first_image_url" : `${first_photo_url}`,
+            "sec_image_url" : `${second_photo_url}`,
+            "third_image_url" : `${third_photo_url}`,
             "description" : `${description}`,
         })
     });

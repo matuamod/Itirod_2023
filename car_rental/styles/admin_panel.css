@@ -132,6 +132,11 @@ body {
     font-weight: bold;
 }
 
+.car-owner span {
+    font-weight: bold;
+    font-size: 25px;
+}
+
 .update-button {
     background-color: #2196F3;
     color: white;
@@ -173,6 +178,7 @@ body {
 }
 
 .modal {
+    width: 60%;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;

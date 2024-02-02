@@ -36,10 +36,12 @@ async function GetStuffAbilities() {
         GetExistingUsers();
 
         var CarControlItem = document.createElement('li');
+        CarControlItem.setAttribute("id", "car-control-li");
         var CarControlLink = document.createElement('a');
         CarControlLink.textContent = 'Car control';
         CarControlItem.appendChild(CarControlLink);
         stuffAbilitiesList.appendChild(CarControlItem);
+        GetExistingCars();
 
         var RentControlItem = document.createElement('li');
         var RentControlLink = document.createElement('a');
@@ -618,100 +620,27 @@ async function updateUser(userId) {
         var modalIsLandlord = document.getElementById('modal-is-landlord-checkbox').checked;
         var isLandlord = false;
 
-        let isValid = true;
-
-        if (!modalUserUsername) {
-            isValid = false;
-            alert('Username field is required.');
-        } else if (modalUserUsername.length > 50) {
-            isValid = false;
-            alert('Username field must be less than 50 characters.');
-        }
-
-        if (!modalUserPassword) {
-            isValid = false;
-            alert('Password field is required.');
-        } else if (modalUserPassword.length > 50) {
-            isValid = false;
-            alert('Password field must be less than 50 characters.');
-        }
-
-        if (!modalUserEmail) {
-            isValid = false;
-            alert('Email field is required.');
-        } else if (modalUserEmail.length > 100) {
-            isValid = false;
-            alert('Email field must be less than 100 characters.');
-        } else if (!modalUserEmail.includes('@') || !modalUserEmail.includes('.com')) {
-            isValid = false;
-            alert('Email field must include "@" and ".com".');
-        }
-
-        if (!modalUserTelephone) {
-            isValid = false;
-            alert('Telephone field is required.');
-        } else if (!modalUserTelephone.startsWith('+')) {
-            isValid = false;
-            alert('Telephone field must start with "+" symbol.');
-        } else if (isNaN(modalUserTelephone.slice(1))) {
-            isValid = false;
-            alert('Telephone field must include only digits.');
-        }
-
-        if (!modalUserAddress) {
-            isValid = false;
-            alert('Address field is required.');
-        } else if (modalUserAddress.length > 100) {
-            isValid = false;
-            alert('Address field must be less than 100 characters.');
-        }
-
-        if (!modalUserLicense) {
-            isValid = false;
-            alert('License number field is required.');
-        } else if (!/^[A-Z]{4}\d+$/.test(modalUserLicense)) {
-            isValid = false;
-            alert('License number must start with four uppercase letters, followed by digits only.');
-        } else if (modalUserLicense.length !== 10) {
-            isValid = false;
-            alert('License number must be 10 characters long.');
-        }
-
-        if (!modalUserDateOfBirth) {
-            isValid = false;
-            alert('Invalid date of birth.');
-        } else {
-            const cutoffDate = new Date();
-            cutoffDate.setFullYear(cutoffDate.getFullYear() - 18);
-            if (modalUserDateOfBirth > cutoffDate) {
-                isValid = false;
-                alert('You must be at least 18 years old to be updated.');
-            }
-        }
-
         if (modalIsLandlord) { isLandlord = true; }
 
-        if(isValid) {
-            let response = await fetch(`http://127.0.0.1:8000/users/stuff_update_user/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    'username': `${modalUserUsername}`,
-                    'password': `${modalUserPassword}`, 
-                    'email': `${modalUserEmail}`,
-                    'telephone': `${modalUserTelephone}`,
-                    'address': `${modalUserAddress}`,
-                    'license': `${modalUserLicense}`,
-                    'date_of_birth': `${modalUserDateOfBirth}`,
-                    'is_landlord': `${isLandlord}`,
-                })
-            });
-            let result = await response.json();
-            console.log(result);    
-        }
+        let response = await fetch(`http://127.0.0.1:8000/users/stuff_update_user/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'username': `${modalUserUsername}`,
+                'password': `${modalUserPassword}`, 
+                'email': `${modalUserEmail}`,
+                'telephone': `${modalUserTelephone}`,
+                'address': `${modalUserAddress}`,
+                'license': `${modalUserLicense}`,
+                'date_of_birth': `${modalUserDateOfBirth}`,
+                'is_landlord': `${isLandlord}`,
+            })
+        });
+        let result = await response.json();
+        console.log(result);    
         closeModal();
         renderExistingUsers();
     });
@@ -965,6 +894,327 @@ async function blockUser(userId) {
 }
 
 
+async function renderExistingCars() {
+    var adminContent = document.querySelector('.admin-content');
+    adminContent.innerHTML = '';
+
+    var existingCarsList = document.createElement('ul');
+    existingCarsList.classList.add('existing-list');
+
+    let response = await fetch('http://127.0.0.1:8000/cars/get_stuff_cars', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let cars = dict.data;
+    console.log(cars);
+
+    cars.forEach(car => {
+        var listItem = document.createElement('li');
+        listItem.classList.add('list-item');
+
+        var itemInfo = document.createElement('div');
+        itemInfo.classList.add('large-item-info');
+
+        var itemButtons = document.createElement('div');
+        itemButtons.classList.add('item-buttons');
+
+        var carOwner = document.createElement('div');
+        carOwner.classList.add('car-owner');
+        
+        var ownernameSpan = document.createElement('span');
+        ownernameSpan.classList.add('car-ownername');
+        ownernameSpan.textContent = `Ownername: ${car.username}`;
+
+        carOwner.appendChild(ownernameSpan);
+
+        var carMainInfo = document.createElement('div');
+        carMainInfo.classList.add('car-main-info');
+        carMainInfo.classList.add('sub-info');
+        
+        var brandSpan = document.createElement('span');
+        brandSpan.classList.add('car-brand');
+        brandSpan.textContent = `Brand: ${car.brand}`;
+
+        var modelSpan = document.createElement('span');
+        modelSpan.classList.add('car-model');
+        modelSpan.textContent = `Model: ${car.model}`;
+
+        var registrationPlateSpan = document.createElement('span');
+        registrationPlateSpan.classList.add('car-registration-plate');
+        registrationPlateSpan.textContent = `Plates: ${car.registration_plate}`;
+        
+        var priceSpan = document.createElement('span');
+        priceSpan.classList.add('car-price');
+        priceSpan.textContent = `Price: ${car.day_price}`;
+
+        carMainInfo.appendChild(brandSpan);
+        carMainInfo.appendChild(modelSpan);
+        carMainInfo.appendChild(registrationPlateSpan);
+        carMainInfo.appendChild(priceSpan);
+
+        var carSecondaryInfo = document.createElement('div');
+        carSecondaryInfo.classList.add('car-secondary-info');
+        carSecondaryInfo.classList.add('sub-info');
+
+        var categorySpan = document.createElement('span');
+        categorySpan.classList.add('car-category');
+        categorySpan.textContent = `Category: ${car.category}`;
+
+        var fuelTypeSpan = document.createElement('span');
+        fuelTypeSpan.classList.add('car-fuel-type');
+        fuelTypeSpan.textContent = `Fuel type: ${car.fuel_type}`;
+
+        var seatsCountSpan = document.createElement('span');
+        seatsCountSpan.classList.add('car-seats-count');
+        seatsCountSpan.textContent = `Seats count: ${car.seats_count}`;
+
+        var colorSpan = document.createElement('span');
+        colorSpan.classList.add('car-color');
+        colorSpan.textContent = `Color: ${car.color}`;
+
+        carSecondaryInfo.appendChild(categorySpan);
+        carSecondaryInfo.appendChild(fuelTypeSpan);
+        carSecondaryInfo.appendChild(seatsCountSpan);
+        carSecondaryInfo.appendChild(colorSpan);
+
+        var carDescriptionInfo = document.createElement('div');
+        carDescriptionInfo.classList.add('car-description-info');
+        carDescriptionInfo.classList.add('sub-info');
+
+        var descriptionSpan = document.createElement('span');
+        descriptionSpan.classList.add('car-description');
+        var truncatedDescription = car.description.slice(0, 110);
+
+        if (car.description.length > 110) {
+            truncatedDescription += '...';
+        }
+
+        descriptionSpan.textContent = `Description: ${truncatedDescription}`;
+
+        carDescriptionInfo.appendChild(descriptionSpan);
+
+        var updateButton = document.createElement('button');
+        updateButton.classList.add('update-button');
+        updateButton.setAttribute('id', `update-button-${car.id}`);
+        updateButton.textContent = 'Update';
+        updateButton.addEventListener('click', () => updateCar(car.id));
+
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.setAttribute('id', `delete-button-${car.id}`);
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => deleteCar(car.id));
+
+        itemInfo.appendChild(carOwner);
+        itemInfo.appendChild(carMainInfo);
+        itemInfo.appendChild(carSecondaryInfo);
+        itemInfo.appendChild(carDescriptionInfo);
+        itemButtons.appendChild(updateButton);
+        itemButtons.appendChild(deleteButton);
+
+        listItem.appendChild(itemInfo);
+        listItem.appendChild(itemButtons);
+
+        existingCarsList.appendChild(listItem);
+    });
+
+    adminContent.appendChild(existingCarsList);
+}
+
+
+function GetExistingCars() {
+    var carControlLi = document.getElementById("car-control-li");
+
+    if(carControlLi) {
+        carControlLi.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            renderExistingCars();
+        });
+    }
+}
+
+
+async function updateCar(carId) {
+    let response = await fetch(`http://127.0.0.1:8000/cars/${carId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let result = await response.json();
+    console.log(result);
+
+    var modalBackground = document.createElement('div');
+    modalBackground.classList.add('modal-background');
+
+    var modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    var modalHeader = document.createElement('h2');
+    modalHeader.textContent = 'Update Car';
+
+    var brandInput = document.createElement('input');
+    brandInput.setAttribute('id', 'modal-brand-input');
+    brandInput.type = 'text';
+    brandInput.placeholder = 'Enter brand:';
+    brandInput.value = result.brand;
+
+    var modelInput = document.createElement('input');
+    modelInput.setAttribute('id', 'modal-model-input');
+    modelInput.type = 'text';
+    modelInput.placeholder = 'Enter model:';
+    modelInput.value = result.model;
+
+    var categoryInput = document.createElement('input');
+    categoryInput.setAttribute('id', 'modal-category-input');
+    categoryInput.type = 'text';
+    categoryInput.placeholder = 'Enter category:';
+    categoryInput.value = result.category;
+
+    var fuelTypeInput = document.createElement('input');
+    fuelTypeInput.setAttribute('id', 'modal-fuel-type-input');
+    fuelTypeInput.type = 'text';
+    fuelTypeInput.placeholder = 'Enter fuel type:';
+    fuelTypeInput.value = result.fuel_type;
+
+    var seatsCountInput = document.createElement('input');
+    seatsCountInput.setAttribute('id', 'modal-seats-count-input');
+    seatsCountInput.type = 'text';
+    seatsCountInput.placeholder = 'Enter seats count';
+    seatsCountInput.value = result.seats_count;
+
+    var colorInput = document.createElement('input');
+    colorInput.setAttribute('id', 'modal-color-input');
+    colorInput.type = 'text';
+    colorInput.placeholder = 'Enter color:';
+    colorInput.value = result.color;
+
+    var registrationPlateInput = document.createElement('input');
+    registrationPlateInput.setAttribute('id', 'modal-registration-plate-input');
+    registrationPlateInput.type = 'text';
+    registrationPlateInput.placeholder = 'Enter registration plate:';
+    registrationPlateInput.value = result.registration_plate;
+
+    var dayPriceInput = document.createElement('input');
+    dayPriceInput.setAttribute('id', 'modal-day-price-input');
+    dayPriceInput.type = 'text';
+    dayPriceInput.placeholder = 'Enter day price:';
+    dayPriceInput.value = result.day_price;
+
+    var firstImageUrlInput = document.createElement('input');
+    firstImageUrlInput.setAttribute('id', 'modal-first-image-url-input');
+    firstImageUrlInput.type = 'text';
+    firstImageUrlInput.placeholder = 'Enter first umage url:';
+    firstImageUrlInput.value = result.first_image_url;
+
+    var secImageUrlInput = document.createElement('input');
+    secImageUrlInput.setAttribute('id', 'modal-sec-image-url-input');
+    secImageUrlInput.type = 'text';
+    secImageUrlInput.placeholder = 'Enter second umage url:';
+    secImageUrlInput.value = result.sec_image_url;
+
+    var thirdImageUrlInput = document.createElement('input');
+    thirdImageUrlInput.setAttribute('id', 'modal-third-image-url-input');
+    thirdImageUrlInput.type = 'text';
+    thirdImageUrlInput.placeholder = 'Enter third umage url:';
+    thirdImageUrlInput.value = result.third_image_url;
+
+    var descriptionInput = document.createElement('input');
+    descriptionInput.setAttribute('id', 'modal-description-input');
+    descriptionInput.type = 'text';
+    descriptionInput.placeholder = 'Enter description:';
+    descriptionInput.value = result.description;
+
+    var okButton = document.createElement('button');
+    okButton.classList.add('ok-button');
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', async function () {
+        var modalCarBrand = document.getElementById('modal-brand-input').value.trim();
+        var modalCarModel = document.getElementById('modal-model-input').value.trim();
+        var modalCarCategory = document.getElementById('modal-category-input').value.trim();
+        var modalCarFuelType = document.getElementById('modal-fuel-type-input').value.trim();
+        var modalCarSeatsCount = document.getElementById('modal-seats-count-input').value.trim();
+        var modalCarColor = document.getElementById('modal-color-input').value.trim();
+        var modalCarRegistrationPlate = document.getElementById('modal-registration-plate-input').value.trim();
+        var modalCarDayPrice = document.getElementById('modal-day-price-input').value.trim();
+        var modalCarFirstImageUrl = document.getElementById('modal-first-image-url-input').value.trim();
+        var modalCarSecImageUrl = document.getElementById('modal-sec-image-url-input').value.trim();
+        var modalCarThirdImageUrl = document.getElementById('modal-third-image-url-input').value.trim();
+        var modalCarDescription = document.getElementById('modal-description-input').value.trim();
+
+        let response = await fetch(`http://127.0.0.1:8000/cars/update_car/${carId}`, {
+            method: 'PUT',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "brand" : `${modalCarBrand}`,
+                "model" : `${modalCarModel}`,
+                "category" : `${modalCarCategory}`,
+                "fuel_type" : `${modalCarFuelType}`,
+                "seats_count" : `${modalCarSeatsCount}`,
+                "color" : `${modalCarColor}`,
+                "registration_plate" : `${modalCarRegistrationPlate}`,
+                "day_price" : `${modalCarDayPrice}`,
+                "first_image_url" : `${modalCarFirstImageUrl}`,
+                "sec_image_url" : `${modalCarSecImageUrl}`,
+                "third_image_url" : `${modalCarThirdImageUrl}`,
+                "description" : `${modalCarDescription}`,
+            })
+        });
+        let result = await response.json();
+        console.log(result);
+        closeModal();
+        renderExistingCars();
+    });
+
+    var cancelButton = document.createElement('button');
+    cancelButton.classList.add('cancel-button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', closeModal);
+
+    modal.appendChild(modalHeader);
+    modal.appendChild(brandInput);
+    modal.appendChild(modelInput);
+    modal.appendChild(categoryInput);
+    modal.appendChild(fuelTypeInput);
+    modal.appendChild(seatsCountInput);
+    modal.appendChild(colorInput);
+    modal.appendChild(registrationPlateInput);
+    modal.appendChild(dayPriceInput);
+    modal.appendChild(firstImageUrlInput);
+    modal.appendChild(secImageUrlInput);
+    modal.appendChild(thirdImageUrlInput);
+    modal.appendChild(descriptionInput);
+    modal.appendChild(okButton);
+    modal.appendChild(cancelButton);
+
+    modalBackground.appendChild(modal);
+
+    document.body.appendChild(modalBackground);
+
+}
+
+
+async function deleteCar(carId) {
+    var confirmDelete = window.confirm("Are you sure you want to delete car?");
+    
+    if(confirmDelete) {
+        await fetch(`http://127.0.0.1:8000/cars/${carId}`, {
+        method: 'DELETE',
+        });
+
+        renderExistingCars();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
 async function renderExistingReviews() {
     var adminContent = document.querySelector('.admin-content');
     adminContent.innerHTML = '';
@@ -1026,7 +1276,12 @@ async function renderExistingReviews() {
 
         var messageSpan = document.createElement('span');
         messageSpan.classList.add('review-message');
-        messageSpan.textContent = `Message: ${review.message}`;
+        var truncatedMessage = review.message.slice(0, 110);
+
+        if (review.message.length > 110) {
+            truncatedMessage += '...';
+        }
+        messageSpan.textContent = `Message: ${truncatedMessage}`;
 
         messageInfo.appendChild(messageSpan);
 

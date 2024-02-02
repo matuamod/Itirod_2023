@@ -8,13 +8,47 @@ from database import get_async_session
 from .cars import car
 from users import user
 from .stripe import create_new_car_plan
-from .schemas import CarCreate, CarRead
+from .schemas import CarCreate, CarUpdate, CarRead, StuffCar
+from typing import List
 
 
 router = APIRouter(
     prefix="/cars",
     tags=["Car"]
 )
+
+
+@router.get("/get_stuff_cars", response_model=List[StuffCar])
+async def get_all_stuff_cars(session: AsyncSession = Depends(get_async_session)):
+    try:
+        count_cars = await session.scalar(select(func.count()).select_from(car))
+        if count_cars == 0:
+            return JSONResponse(content=[{"message": "There is 0 cars available"}], status_code=200)
+        
+        query = (
+            select(
+                car.c.id,
+                user.c.username.label("username"),
+                car.c.brand,
+                car.c.model,
+                car.c.category,
+                car.c.fuel_type,
+                car.c.seats_count,
+                car.c.color,
+                car.c.registration_plate,
+                car.c.day_price,
+                car.c.description
+            )
+            .join(user, user.c.id == car.c.owner_id)
+        )
+        result = await session.execute(query)
+        carlist = [dict(r._mapping) for r in result]
+    
+        return JSONResponse(content={"data": carlist}, status_code=200)  
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
 
 
 @router.post("/")
@@ -33,7 +67,7 @@ async def create_car(new_car: CarCreate, session: AsyncSession = Depends(get_asy
 
 
 @router.put("/update_car/{car_id}")
-async def update_car(car_id: int, car_update: CarCreate , session: AsyncSession = Depends(get_async_session)):
+async def update_car(car_id: int, car_update: CarUpdate , session: AsyncSession = Depends(get_async_session)):
     try:
         stmt = update(car).where(car.c.id == car_id).values(**car_update.dict())
         await session.execute(stmt)
