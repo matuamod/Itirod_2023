@@ -7,7 +7,7 @@ from database import get_async_session
 from .reviews import review as review
 from users import user as user
 from cars import car as car
-from .schemas import ReviewCreate, ReviewInfo
+from .schemas import ReviewCreate, ReviewInfo, ReviewUpdate
 from typing import List
 
 
@@ -29,6 +29,37 @@ async def create_review(new_review: ReviewCreate, session: AsyncSession = Depend
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
     return JSONResponse(content={"message": "Review succesfully created"}, status_code=200)
+
+
+@router.get("/review/{review_id}")
+async def get_review(review_id: int, session: AsyncSession = Depends(get_async_session)):
+    try:
+        query = select(review.c.message).where(review.c.id == review_id)
+        result = await session.execute(query)
+        message = [dict(r._mapping) for r in result][0]
+        return JSONResponse(content={"data": message}, status_code=200)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+
+
+
+@router.put("/review_update/{review_id}")
+async def update_review(review_id: int, new_message: ReviewUpdate, session: AsyncSession = Depends(get_async_session)):
+    try:
+        stmt = update(review).where(review.c.id == review_id).values(**new_message.model_dump())
+        await session.execute(stmt)
+        await session.commit()
+        return JSONResponse(content={"message": "Review data updated"}, status_code=200)
+    except IndexError as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Wrong review_id, this review doesn't exist"}, status_code=400)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
 
 
 @router.get("/", response_model=List[ReviewInfo])
@@ -70,7 +101,7 @@ async def get_car_reviews(car_id: int, session: AsyncSession = Depends(get_async
         reviews_count = await session.scalar(select(func.count()).select_from(review).where(review.c.car_id == car_id))
         
         if reviews_count == 0:
-            return JSONResponse(content=[{"message": "Car has 0 reviews yet..."}], status_code=200)
+            return JSONResponse(content={"message": "Car has 0 reviews yet..."}, status_code=200)
         else:
             reviews_query = select(
                 user.c.username,
@@ -88,9 +119,7 @@ async def get_car_reviews(car_id: int, session: AsyncSession = Depends(get_async
             for review_item in reviews_list:
                 review_item["created_at"] = review_item["created_at"].strftime("%H:%M %d-%m-%Y")
             
-            res = [{"message": f"Car has {reviews_count} reviews:"}]
-            res.extend(reviews_list)
-            return JSONResponse(content=res, status_code=200)
+            return JSONResponse(content={"message": f"Car has {reviews_count} reviews:", "data": reviews_list}, status_code=200)
     except Exception as e:
         print(type(e))
         print(e)

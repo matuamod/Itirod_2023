@@ -21,7 +21,8 @@ async function GetCar() {
         }
     });
 
-    let result_car = await response_car.json();
+    let result = await response_car.json();
+    let result_car = result.data;
     console.log(result_car);
 
     document.getElementById("name").value = `${result_car.brand}`;

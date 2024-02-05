@@ -48,7 +48,8 @@ async function FillAllSortSets() {
         }
     });
 
-    const cars = await response.json();
+    const result = await response.json();
+    const cars = result.data;
     const brand = new Array();
     const model = new Array();
     const cur_model = new Array();
@@ -133,7 +134,8 @@ async function GetCars(url) {
             'Content-Type': 'application/json'
         }
     });
-    let result_cars = await response_cars.json();
+    let result = await response_cars.json();
+    let result_cars = result.data;
     console.log(result_cars);
     
     var ul = document.querySelector(".search-content__list");

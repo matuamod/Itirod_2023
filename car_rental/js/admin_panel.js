@@ -44,10 +44,12 @@ async function GetStuffAbilities() {
         GetExistingCars();
 
         var RentControlItem = document.createElement('li');
+        RentControlItem.setAttribute("id", "rent-control-li");
         var RentControlLink = document.createElement('a');
         RentControlLink.textContent = 'Rent control';
         RentControlItem.appendChild(RentControlLink);
         stuffAbilitiesList.appendChild(RentControlItem);
+        GetExistingRents();
 
         var ReviewControlItem = document.createElement('li');
         ReviewControlItem.setAttribute('id', 'review-control-li');
@@ -948,7 +950,7 @@ async function renderExistingCars() {
         
         var priceSpan = document.createElement('span');
         priceSpan.classList.add('car-price');
-        priceSpan.textContent = `Price: ${car.day_price}`;
+        priceSpan.textContent = `Price: ${car.day_price}$`;
 
         carMainInfo.appendChild(brandSpan);
         carMainInfo.appendChild(modelSpan);
@@ -1045,6 +1047,7 @@ async function updateCar(carId) {
         } 
     });
     let result = await response.json();
+    result = result.data;
     console.log(result);
 
     var modalBackground = document.createElement('div');
@@ -1215,6 +1218,258 @@ async function deleteCar(carId) {
 }
 
 
+async function renderExistingRents() {
+    var adminContent = document.querySelector('.admin-content');
+    adminContent.innerHTML = '';
+
+    var existingRentsList = document.createElement('ul');
+    existingRentsList.classList.add('existing-list');
+
+    let response = await fetch('http://127.0.0.1:8000/rental_deal', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let rents = dict.data;
+    console.log(rents);
+
+    rents.forEach(rent => {
+        var listItem = document.createElement('li');
+        listItem.classList.add('list-item');
+
+        var itemInfo = document.createElement('div');
+        itemInfo.classList.add('large-item-info');
+
+        var itemButtons = document.createElement('div');
+        itemButtons.classList.add('item-buttons');
+
+        var rentUsernameInfo = document.createElement('div');
+        rentUsernameInfo.classList.add('rent-user');
+        
+        var usernameSpan = document.createElement('span');
+        usernameSpan.classList.add('rent-username');
+        usernameSpan.textContent = `Rentername: ${rent.username}`;
+ 
+        rentUsernameInfo.appendChild(usernameSpan);
+
+        var rentCarInfo = document.createElement('div');
+        rentCarInfo.classList.add('car-info');
+        rentCarInfo.classList.add('sub-info');
+        
+        var brandSpan = document.createElement('span');
+        brandSpan.classList.add('car-brand');
+        brandSpan.textContent = `Brand: ${rent.brand}`;
+
+        var modelSpan = document.createElement('span');
+        modelSpan.classList.add('car-model');
+        modelSpan.textContent = `Model: ${rent.model}`;
+
+        var registrationPlateSpan = document.createElement('span');
+        registrationPlateSpan.classList.add('car-registration-plate');
+        registrationPlateSpan.textContent = `Plates: ${rent.registration_plate}`;
+
+        rentCarInfo.appendChild(brandSpan);
+        rentCarInfo.appendChild(modelSpan);
+        rentCarInfo.appendChild(registrationPlateSpan);
+
+        var rentLocationInfo = document.createElement('div');
+        rentLocationInfo.classList.add('rent-location-info');
+        rentLocationInfo.classList.add('sub-info');
+
+        var receptionPointSpan = document.createElement('span');
+        receptionPointSpan.classList.add('rent-reception-point');
+        receptionPointSpan.textContent = `Start location: ${rent.reception_point}`;
+
+        var issuePointSpan = document.createElement('span');
+        issuePointSpan.classList.add('rent-issue-point');
+        issuePointSpan.textContent = `End location: ${rent.issue_point}`;
+
+        rentLocationInfo.appendChild(receptionPointSpan);
+        rentLocationInfo.appendChild(issuePointSpan);
+
+        var rentDateInfo = document.createElement('div');
+        rentDateInfo.classList.add('rent-date-info');
+        rentDateInfo.classList.add('sub-info');
+
+        var startDateSpan = document.createElement('span');
+        startDateSpan.classList.add('rent-start-date');
+        startDateSpan.textContent = `Start date: ${rent.start_date}`;
+
+        var endDateSpan = document.createElement('span');
+        endDateSpan.classList.add('rent-end-date');
+        endDateSpan.textContent = `End date: ${rent.end_date}`;
+
+        rentDateInfo.appendChild(startDateSpan);
+        rentDateInfo.appendChild(endDateSpan);
+
+        var rentPriceInfo = document.createElement('div');
+        rentPriceInfo.classList.add('rent-price-info');
+        rentPriceInfo.classList.add('sub-info');
+
+        var priceSpan = document.createElement('span');
+        priceSpan.classList.add('rent-price');
+        priceSpan.textContent = `Total price: ${rent.total_price}$`;
+
+        rentPriceInfo.appendChild(priceSpan);
+
+        var updateButton = document.createElement('button');
+        updateButton.classList.add('update-button');
+        updateButton.setAttribute('id', `update-button-${rent.id}`);
+        updateButton.textContent = 'Update';
+        updateButton.addEventListener('click', () => updateRent(rent.id));
+
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.setAttribute('id', `delete-button-${rent.id}`);
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => deleteRent(rent.id));
+
+        itemInfo.appendChild(rentUsernameInfo);
+        itemInfo.appendChild(rentCarInfo);
+        itemInfo.appendChild(rentLocationInfo);
+        itemInfo.appendChild(rentDateInfo);
+        itemInfo.appendChild(rentPriceInfo);
+        itemButtons.appendChild(updateButton);
+        itemButtons.appendChild(deleteButton);
+
+        listItem.appendChild(itemInfo);
+        listItem.appendChild(itemButtons);
+
+        existingRentsList.appendChild(listItem);
+    });
+
+    adminContent.appendChild(existingRentsList);
+}
+
+
+function GetExistingRents() {
+    var rentControlLi = document.getElementById("rent-control-li");
+
+    if(rentControlLi) {
+        rentControlLi.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            renderExistingRents();
+        });
+    }
+}
+
+
+async function updateRent(rentalDealId) {
+    let response = await fetch(`http://127.0.0.1:8000/rental_deal/get_rental_deal/${rentalDealId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let result = dict.data;
+
+    var modalBackground = document.createElement('div');
+    modalBackground.classList.add('modal-background');
+
+    var modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    var modalHeader = document.createElement('h2');
+    modalHeader.textContent = 'Update Rental Deal';
+
+    var startDateInput = document.createElement('input');
+    startDateInput.setAttribute('id', 'modal-start-date-input');
+    startDateInput.type = 'text';
+    startDateInput.placeholder = 'Enter start date:';
+    startDateInput.value = result.start_date;
+
+    var endDateInput = document.createElement('input');
+    endDateInput.setAttribute('id', 'modal-end-date-input');
+    endDateInput.type = 'text';
+    endDateInput.placeholder = 'Enter end date:';
+    endDateInput.value = result.end_date;
+
+    var receptionPointInput = document.createElement('input');
+    receptionPointInput.setAttribute('id', 'modal-reception-point-input');
+    receptionPointInput.type = 'text';
+    receptionPointInput.placeholder = 'Enter start location:';
+    receptionPointInput.value = result.reception_point;
+
+    var issuePointInput = document.createElement('input');
+    issuePointInput.setAttribute('id', 'modal-issue-point-input');
+    issuePointInput.type = 'text';
+    issuePointInput.placeholder = 'Enter end point:';
+    issuePointInput.value = result.issue_point;
+
+    var totalPriceInput = document.createElement('input');
+    totalPriceInput.setAttribute('id', 'modal-total-price-input');
+    totalPriceInput.type = 'text';
+    totalPriceInput.placeholder = 'Enter total price';
+    totalPriceInput.value = result.total_price;
+
+    var okButton = document.createElement('button');
+    okButton.classList.add('ok-button');
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', async function () {
+        var modalRentStartDate = document.getElementById('modal-start-date-input').value.trim();
+        var modalRentEndDate = document.getElementById('modal-end-date-input').value.trim();
+        var modalRentReceptionPoint = document.getElementById('modal-reception-point-input').value.trim();
+        var modalRentIssuePoint = document.getElementById('modal-issue-point-input').value.trim();
+        var modalRentTotalPrice = document.getElementById('modal-total-price-input').value.trim();
+
+        let response = await fetch(`http://127.0.0.1:8000/rental_deal/update_rental_deal/${rentalDealId}`, {
+            method: 'PUT',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'start_date': `${modalRentStartDate}`,
+                'end_date': `${modalRentEndDate}`, 
+                'reception_point': `${modalRentReceptionPoint}`,
+                'issue_point': `${modalRentIssuePoint}`,
+                'total_price': `${modalRentTotalPrice}`,
+            })
+        });
+        let result = await response.json();
+        console.log(result);    
+        closeModal();
+        renderExistingRents();
+    });
+
+    var cancelButton = document.createElement('button');
+    cancelButton.classList.add('cancel-button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', closeModal);
+
+    modal.appendChild(modalHeader);
+    modal.appendChild(startDateInput);
+    modal.appendChild(endDateInput);
+    modal.appendChild(receptionPointInput);
+    modal.appendChild(issuePointInput);
+    modal.appendChild(totalPriceInput);
+    modal.appendChild(okButton);
+    modal.appendChild(cancelButton);
+
+    modalBackground.appendChild(modal);
+
+    document.body.appendChild(modalBackground);
+}
+
+
+async function deleteRent(rentalDealId) {
+    var confirmDelete = window.confirm("Are you sure you want to delete rental deal?");
+    
+    if(confirmDelete) {
+        await fetch(`http://127.0.0.1:8000/rental_deal/delete_rental_deal/${rentalDealId}`, {
+        method: 'DELETE',
+        });
+
+        renderExistingRents();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
 async function renderExistingReviews() {
     var adminContent = document.querySelector('.admin-content');
     adminContent.innerHTML = '';
@@ -1285,6 +1540,12 @@ async function renderExistingReviews() {
 
         messageInfo.appendChild(messageSpan);
 
+        var updateButton = document.createElement('button');
+        updateButton.classList.add('update-button');
+        updateButton.setAttribute('id', `update-button-${review.id}`);
+        updateButton.textContent = 'Update';
+        updateButton.addEventListener('click', () => updateReview(review.id));
+
         var deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-button');
         deleteButton.setAttribute('id', `delete-button-${review.id}`);
@@ -1294,6 +1555,7 @@ async function renderExistingReviews() {
         itemInfo.appendChild(usernameInfo);
         itemInfo.appendChild(carInfo);
         itemInfo.appendChild(messageInfo);
+        itemButtons.appendChild(updateButton);
         itemButtons.appendChild(deleteButton);
 
         listItem.appendChild(itemInfo);
@@ -1315,6 +1577,71 @@ function GetExistingReviews() {
             renderExistingReviews();
         });
     }
+}
+
+
+async function updateReview(reviewId) {
+    let response = await fetch(`http://127.0.0.1:8000/reviews/review/${reviewId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let result = dict.data;
+    console.log(result);
+
+    var modalBackground = document.createElement('div');
+    modalBackground.classList.add('modal-background');
+
+    var modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    var modalHeader = document.createElement('h2');
+    modalHeader.textContent = 'Update Review';
+
+    var messageInput = document.createElement('input');
+    messageInput.setAttribute('id', 'modal-message-input');
+    messageInput.type = 'text';
+    messageInput.placeholder = 'Enter message:';
+    messageInput.value = result.message;
+
+    var okButton = document.createElement('button');
+    okButton.classList.add('ok-button');
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', async function () {
+        var modalReviewMessage = document.getElementById('modal-message-input').value.trim();
+        console.log(modalReviewMessage);
+
+        let response = await fetch(`http://127.0.0.1:8000/reviews/review_update/${reviewId}`, {
+            method: 'PUT',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'message': `${modalReviewMessage}`,
+            })
+        });
+        let result = await response.json();
+        console.log(result);    
+        closeModal();
+        renderExistingReviews();
+    });
+
+    var cancelButton = document.createElement('button');
+    cancelButton.classList.add('cancel-button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', closeModal);
+
+    modal.appendChild(modalHeader);
+    modal.appendChild(messageInput);
+    modal.appendChild(okButton);
+    modal.appendChild(cancelButton);
+
+    modalBackground.appendChild(modal);
+
+    document.body.appendChild(modalBackground);
 }
 
 

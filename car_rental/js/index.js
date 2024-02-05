@@ -48,7 +48,8 @@ async function FillAllSortSets() {
         }
     });
 
-    const cars = await response.json();
+    const result = await response.json();
+    const cars = result.data;
     const brand = new Array();
     const model = new Array();
     const cur_model = new Array();
@@ -133,8 +134,8 @@ async function GetCars(url) {
             'Content-Type': 'application/json'
         }
     });
-    let result_cars = await response_cars.json();
-    console.log(result_cars);
+    let first_result = await response_cars.json();
+    let result_cars = first_result.data;
 
     let response_rental_deal = await fetch(`http://127.0.0.1:8000/rental_deal/`, {
         method: 'GET',
@@ -143,15 +144,12 @@ async function GetCars(url) {
         }
        
     });
-    let result_rental_deal = await response_rental_deal.json();
-    console.log(result_rental_deal);
+    let sec_result = await response_rental_deal.json();
+    let result_rental_deal = sec_result.data;
 
     var rental_deal_ids = [];
 
     for (let item of result_rental_deal){
-        if(item.hasOwnProperty('message')){
-            continue
-        }
         rental_deal_ids.push(item.car_id);
     }
 

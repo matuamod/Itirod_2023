@@ -117,7 +117,7 @@ async def get_car(car_id: int, session: AsyncSession = Depends(get_async_session
         
         res = {"message": "Flat data received"}
         res.update(car_dict)
-        return JSONResponse(content=res, status_code=200)  
+        return JSONResponse(content={"data": res}, status_code=200)  
     except IndexError as e:
         print(type(e))
         print(e)
@@ -156,7 +156,7 @@ async def get_cars_created_by_user(user_id: int, brand="", model="", category=""
         res.extend(carlist)
         if len(res) == 1:
             return JSONResponse(content=[{"message": "0 cars"}], status_code=200)  
-        return JSONResponse(content=res, status_code=200)  
+        return JSONResponse(content={"data": res}, status_code=200)  
     except Exception as e:
         print(type(e))
         print(e)
@@ -190,7 +190,7 @@ async def get_all_cars(brand="", model="", category="", fuel="", color="", price
         res.extend(carlist)
         if len(res) == 1:
             return JSONResponse(content=[{"message": "0 cars"}], status_code=200)  
-        return JSONResponse(content=res, status_code=200)  
+        return JSONResponse(content={"data": res}, status_code=200)  
     except Exception as e:
         print(type(e))
         print(e)

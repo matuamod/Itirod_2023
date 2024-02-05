@@ -48,7 +48,8 @@ async function FillAllSortSets() {
         }
     });
 
-    const cars = await response.json();
+    const result = await response.json();
+    const cars = result.data;
     const brand = new Array();
     const model = new Array();
     const cur_model = new Array();
@@ -142,7 +143,7 @@ async function GetCars(url) {
 
     var cars_count = 0;
 
-    for (let item of result_cars){
+    for (let item of result_cars.data){
         if(item.hasOwnProperty('message')){ continue; }
 
         var li = document.createElement("li");

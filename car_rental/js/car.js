@@ -25,7 +25,8 @@ async function FillCarInf() {
             'Content-Type': 'application/json'
         }
     });
-    let result_car = await response_car.json();
+    let result = await response_car.json();
+    let result_car = result.data;
 
     document.getElementById("car-content-title").innerHTML = `${result_car.brand} ` + `${result_car.model}`;
 
@@ -79,7 +80,8 @@ async function CalculatePrice() {
             'Content-Type': 'application/json'
         }
     });
-    let result_car = await response_car.json();
+    let result = await response_car.json();
+    let result_car = result.data;
 
     start_date = new Date(start_date);
     end_date = new Date(end_date);
@@ -252,7 +254,7 @@ async function GetReviews() {
     });
     let result_reviews = await response_reviews.json();
 
-    let infoItem = result_reviews.shift();
+    let infoItem = result_reviews;
     var infoDiv = document.querySelector(".review-content__info");
     var div = document.createElement("div");
     div.setAttribute("class", "review-info");
@@ -263,10 +265,12 @@ async function GetReviews() {
 
     reviewsList.innerHTML = '';
 
-    result_reviews.forEach(review => {
-        let listItem = createReviewListItem(review);
-        reviewsList.appendChild(listItem);
-    });
+    if(result_reviews.data) {
+        result_reviews.data.forEach(review => {
+            let listItem = createReviewListItem(review);
+            reviewsList.appendChild(listItem);
+        });
+    }
 }
 
 

@@ -6,6 +6,10 @@ class ReviewCreate(BaseModel):
     message : str
     
     
+class ReviewUpdate(BaseModel):
+    message: str
+
+    
 class ReviewInfo(BaseModel):
     id : int
     username : str
