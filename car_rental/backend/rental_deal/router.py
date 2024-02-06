@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import func, select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,7 +7,7 @@ from database import get_async_session
 from .rental_deal import rental_deal
 from users import user
 from cars import car as car
-from .schemas import RentalDealInfo, StuffRentalDeal, RentalDeal
+from .schemas import RentalDealInfo, StuffRentalDeal, RentalDeal, StuffCreateRentalDeal
 from .stripe import create_rental_plan
 from typing import List
 
@@ -49,6 +49,51 @@ async def create_rental_deal(new_rent: RentalDeal, session: AsyncSession = Depen
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
     return JSONResponse(content={"message": "Rental deal succesfully created", "plan_id": plan_id}, status_code=200)
+
+
+@router.post("/stuff_create_rental_deal")
+async def stuff_create_rental_deal(new_rent: StuffCreateRentalDeal, session: AsyncSession = Depends(get_async_session)):
+    try:
+        user_id_query = select(user.c.id).where(user.c.username == new_rent.username)
+        user_id_result = await session.execute(user_id_query)
+        
+        try:
+            user_id = user_id_result.scalar_one()
+        except exc.NoResultFound:
+            raise HTTPException(
+                status_code=400,
+                detail="User not found"
+            )
+            
+        car_id_query = select(car.c.id).where(car.c.registration_plate == new_rent.registration_plate)
+        car_id_result = await session.execute(car_id_query)
+        
+        try:
+            car_id = car_id_result.scalar_one()
+        except exc.NoResultFound:
+            raise HTTPException(
+                status_code=400,
+                detail="Car with this registration plate doesn't exists."
+            )
+
+        rental_deal_insert = insert(rental_deal).values(
+            user_id=user_id,
+            car_id=car_id,
+            start_date=new_rent.start_date,
+            end_date=new_rent.end_date,
+            reception_point=new_rent.reception_point,
+            issue_point=new_rent.issue_point,
+            total_price=new_rent.total_price
+        )
+        await session.execute(rental_deal_insert)
+        await session.commit()
+    except HTTPException as e:
+        return JSONResponse(content={"message": e.detail}, status_code=e.status_code)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    return JSONResponse(content={"message": "Rental deal succesfully created"}, status_code=200)
 
 
 @router.put("/update_rental_deal/{rental_deal_id}")

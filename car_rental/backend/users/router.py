@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import select, insert, update, delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -115,6 +115,21 @@ async def block_user(user_id: int, session: AsyncSession = Depends(get_async_ses
 @router.post("/registration")
 async def register_user(new_user: UserCreate, session: AsyncSession = Depends(get_async_session)):
     try:
+        user_exists_query = select(user).where(
+            (user.c.username == new_user.username) |
+            (user.c.email == new_user.email) |
+            (user.c.telephone == new_user.telephone) |
+            (user.c.license == new_user.license)
+        )
+        user_exists_result = await session.execute(user_exists_query)
+        existing_user = user_exists_result.scalar()
+        
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="This user with such data is registered"
+            )
+        
         blocked_user_query = select(blocked_user).where(
             (blocked_user.c.email == new_user.email) |
             (blocked_user.c.telephone == new_user.telephone) |
@@ -124,9 +139,12 @@ async def register_user(new_user: UserCreate, session: AsyncSession = Depends(ge
         existing_blocked_user = blocked_user_result.scalar()
 
         if existing_blocked_user:
-            return JSONResponse(content={"message": "This user is blocked"}, status_code=400)
+            raise HTTPException(
+                status_code=400,
+                detail="This user is blocked"
+            )
         
-        stmt = insert(user).values(**new_user.dict())
+        stmt = insert(user).values(**new_user.model_dump())
         await session.execute(stmt)
         await session.commit()
         
@@ -134,10 +152,8 @@ async def register_user(new_user: UserCreate, session: AsyncSession = Depends(ge
         result = await session.execute(query)
         user_dict = [dict(r._mapping) for r in result][0]
         password = user_dict.get('password')
-    except exc.IntegrityError as e:
-        print(type(e))
-        print(e)
-        return JSONResponse(content={"message": "This email already registered"}, status_code=400)
+    except HTTPException as e:
+        return JSONResponse(content={"message": e.detail}, status_code=e.status_code)
     except Exception as e:
         print(type(e))
         print(e)

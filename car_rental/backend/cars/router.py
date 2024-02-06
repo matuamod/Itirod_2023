@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import func, select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,7 +8,7 @@ from database import get_async_session
 from .cars import car
 from users import user
 from .stripe import create_new_car_plan
-from .schemas import CarCreate, CarUpdate, CarRead, StuffCar
+from .schemas import CarCreate, CarUpdate, CarRead, StuffCar, StuffCarCreate
 from typing import List
 
 
@@ -54,16 +54,83 @@ async def get_all_stuff_cars(session: AsyncSession = Depends(get_async_session))
 @router.post("/")
 async def create_car(new_car: CarCreate, session: AsyncSession = Depends(get_async_session)):
     try:
+        car_exists_query = select(car).where(car.c.registration_plate == new_car.registration_plate)
+        try:
+            car_exists_result = await session.execute(car_exists_query)
+            existing_car = car_exists_result.scalar_one()
+        except exc.NoResultFound:
+            existing_car = None
+        
+        if existing_car:
+            raise HTTPException(
+                status_code=400,
+                detail="Car with this registration plate already exists."
+            )
         stmt = insert(car).values(**new_car.dict())
         plan_id = create_new_car_plan(new_car.day_price*100*3)
         print(plan_id)
         await session.execute(stmt)
         await session.commit()
+    except HTTPException as e:
+        return JSONResponse(content={"message": e.detail}, status_code=e.status_code)
     except Exception as e:
         print(type(e))
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
     return JSONResponse(content={"message": "Car succesfully created", "plan_id": plan_id}, status_code=200)
+
+
+@router.post("/stuff_create_car")
+async def stuff_create_car(new_car: StuffCarCreate, session: AsyncSession = Depends(get_async_session)):
+    try:
+        user_id_query = select(user.c.id).where((user.c.username == new_car.username) & (user.c.is_landlord == True))
+        user_id_result = await session.execute(user_id_query)
+        
+        try:
+            user_id = user_id_result.scalar_one()
+        except exc.NoResultFound:
+            raise HTTPException(
+                status_code=400,
+                detail="User not found or does not have landlord status."
+            )
+        
+        car_exists_query = select(car).where(car.c.registration_plate == new_car.registration_plate)
+        try:
+            car_exists_result = await session.execute(car_exists_query)
+            existing_car = car_exists_result.scalar_one()
+        except exc.NoResultFound:
+            existing_car = None
+        
+        if existing_car:
+            raise HTTPException(
+                status_code=400,
+                detail="Car with this registration plate already exists."
+            )
+        
+        car_insert = insert(car).values(
+            owner_id=user_id,
+            first_image_url=new_car.first_image_url,
+            sec_image_url=new_car.sec_image_url,
+            third_image_url=new_car.third_image_url,
+            brand=new_car.brand,
+            model=new_car.model,
+            category=new_car.category,
+            fuel_type=new_car.fuel_type,
+            seats_count=new_car.seats_count,
+            color=new_car.color,
+            registration_plate=new_car.registration_plate,
+            day_price=new_car.day_price,
+            description=new_car.description
+        )
+        await session.execute(car_insert)
+        await session.commit()
+    except HTTPException as e:
+        return JSONResponse(content={"message": e.detail}, status_code=e.status_code)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    return JSONResponse(content={"message": "Car succesfully created"}, status_code=200)
 
 
 @router.put("/update_car/{car_id}")

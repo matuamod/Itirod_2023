@@ -17,3 +17,9 @@ class ReviewInfo(BaseModel):
     model : str
     registration_plate : str
     message : str
+    
+    
+class StuffReviewCreate(BaseModel):
+    username : str
+    registration_plate : str
+    message : str

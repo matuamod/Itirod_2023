@@ -22,9 +22,11 @@ async function GetStuffAbilities() {
             ManagerControlItem.appendChild(ManagerControlLink);
             stuffAbilitiesList.appendChild(ManagerControlItem);
             GetExistingManagers();
+            renderExistingManagers();
             
         } else {
             document.querySelector(".stuff_info").textContent = `Manager: ${result.username}`;
+            renderExistingUsers();
         }
 
         var UserControlItem = document.createElement('li');
@@ -68,6 +70,19 @@ async function GetStuffAbilities() {
         stuffAbilitiesList.appendChild(LogoutItem);
 
     }
+}
+
+
+async function isAdminStatus() {
+    let response = await fetch(`http://127.0.0.1:8000/stuff/info/${localStorage.getItem('stuff_id')}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let result = dict.data;
+    return result.is_admin;
 }
 
 
@@ -398,124 +413,133 @@ async function renderExistingUsers() {
     let users = dict.data;
     console.log(users);
 
-    var createItem = document.createElement('li');
-    createItem.classList.add('list-item');
-
-    var createItemButton = document.createElement('div');
-    createItemButton.classList.add('create-item-button');
-
-    var createButton = document.createElement('button');
-    createButton.classList.add('form-button');
-    createButton.classList.add('create-button');
-    createButton.setAttribute('id', `create-button`);
-    createButton.textContent = 'Create User';
-    createButton.addEventListener('click', () => createUser());
-
-    createItemButton.appendChild(createButton);
-    createItem.appendChild(createItemButton);
-    existingUsersList.appendChild(createItem);
-
-    users.forEach(user => {
-        var listItem = document.createElement('li');
-        listItem.classList.add('list-item');
-
-        var itemInfo = document.createElement('div');
-        itemInfo.classList.add('large-item-info');
-
-        var itemButtons = document.createElement('div');
-        itemButtons.classList.add('item-buttons');
-
-        var userStatus = document.createElement('div');
-        userStatus.classList.add('user-status');
+    (async () => {
+        const isAdmin = await isAdminStatus();
         
-        var usernameSpan = document.createElement('span');
-        usernameSpan.classList.add('user-username');
-        usernameSpan.textContent = `Username: ${user.username}`;
+        if(isAdmin) {
+            var createItem = document.createElement('li');
+            createItem.classList.add('list-item');
 
-        var isLandlordSpan = document.createElement('span');
-        isLandlordSpan.classList.add('user-is-landlord');
+            var createItemButton = document.createElement('div');
+            createItemButton.classList.add('create-item-button');
 
-        if(user.is_landlord) {
-            isLandlordSpan.textContent = `Role: Owner`;
-        } else {
-            isLandlordSpan.textContent = `Role: User`;
+            var createButton = document.createElement('button');
+            createButton.classList.add('form-button');
+            createButton.classList.add('create-button');
+            createButton.setAttribute('id', `create-button`);
+            createButton.textContent = 'Create User';
+            createButton.addEventListener('click', () => createUser());
+
+            createItemButton.appendChild(createButton);
+            createItem.appendChild(createItemButton);
+            existingUsersList.appendChild(createItem);
         }
-        
-        userStatus.appendChild(usernameSpan);
-        userStatus.appendChild(isLandlordSpan);
 
-        var userMainInfo = document.createElement('div');
-        userMainInfo.classList.add('user-main-info');
-        userMainInfo.classList.add('sub-info');
-        
-        var passwordSpan = document.createElement('span');
-        passwordSpan.classList.add('user-password');
-        passwordSpan.textContent = `Password: ${user.password}`;
+        users.forEach(user => {
+            var listItem = document.createElement('li');
+            listItem.classList.add('list-item');
 
-        var emailSpan = document.createElement('span');
-        emailSpan.classList.add('user-email');
-        emailSpan.textContent = `Email: ${user.email}`;
-        
-        var telephoneSpan = document.createElement('span');
-        telephoneSpan.classList.add('user-telephone');
-        telephoneSpan.textContent = `Telephone: ${user.telephone}`;
+            var itemInfo = document.createElement('div');
+            itemInfo.classList.add('large-item-info');
 
-        var licenseSpan = document.createElement('span');
-        licenseSpan.classList.add('user-license');
-        licenseSpan.textContent = `License: ${user.license}`;
+            var itemButtons = document.createElement('div');
+            itemButtons.classList.add('item-buttons');
 
-        userMainInfo.appendChild(passwordSpan);
-        userMainInfo.appendChild(emailSpan);
-        userMainInfo.appendChild(telephoneSpan);
-        userMainInfo.appendChild(licenseSpan);
+            var userStatus = document.createElement('div');
+            userStatus.classList.add('user-status');
+            
+            var usernameSpan = document.createElement('span');
+            usernameSpan.classList.add('user-username');
+            usernameSpan.textContent = `Username: ${user.username}`;
 
-        var userSecondaryInfo = document.createElement('div');
-        userSecondaryInfo.classList.add('user-secondary-info');
-        userSecondaryInfo.classList.add('sub-info');
+            var isLandlordSpan = document.createElement('span');
+            isLandlordSpan.classList.add('user-is-landlord');
 
-        var dateOfBirthSpan = document.createElement('span');
-        dateOfBirthSpan.classList.add('user-date-of-birth');
-        dateOfBirthSpan.textContent = `Date of birth: ${user.date_of_birth}`;
+            if(user.is_landlord) {
+                isLandlordSpan.textContent = `Role: Owner`;
+            } else {
+                isLandlordSpan.textContent = `Role: User`;
+            }
+            
+            userStatus.appendChild(usernameSpan);
+            userStatus.appendChild(isLandlordSpan);
 
-        var addressSpan = document.createElement('span');
-        addressSpan.classList.add('user-address');
-        addressSpan.textContent = `Address: ${user.address}`;
+            var userMainInfo = document.createElement('div');
+            userMainInfo.classList.add('user-main-info');
+            userMainInfo.classList.add('sub-info');
+            
+            var passwordSpan = document.createElement('span');
+            passwordSpan.classList.add('user-password');
+            passwordSpan.textContent = `Password: ${user.password}`;
 
-        userSecondaryInfo.appendChild(dateOfBirthSpan);
-        userSecondaryInfo.appendChild(addressSpan);
+            var emailSpan = document.createElement('span');
+            emailSpan.classList.add('user-email');
+            emailSpan.textContent = `Email: ${user.email}`;
+            
+            var telephoneSpan = document.createElement('span');
+            telephoneSpan.classList.add('user-telephone');
+            telephoneSpan.textContent = `Telephone: ${user.telephone}`;
 
-        var updateButton = document.createElement('button');
-        updateButton.classList.add('update-button');
-        updateButton.setAttribute('id', `update-button-${user.id}`);
-        updateButton.textContent = 'Update';
-        updateButton.addEventListener('click', () => updateUser(user.id));
+            var licenseSpan = document.createElement('span');
+            licenseSpan.classList.add('user-license');
+            licenseSpan.textContent = `License: ${user.license}`;
 
-        var blockButton = document.createElement('button');
-        blockButton.classList.add('block-button');
-        blockButton.setAttribute('id', `block-button-${user.id}`);
-        blockButton.textContent = 'Block';
-        blockButton.addEventListener('click', () => blockUser(user.id));
+            userMainInfo.appendChild(passwordSpan);
+            userMainInfo.appendChild(emailSpan);
+            userMainInfo.appendChild(telephoneSpan);
+            userMainInfo.appendChild(licenseSpan);
 
-        var deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        deleteButton.setAttribute('id', `delete-button-${user.id}`);
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => deleteUser(user.id));
+            var userSecondaryInfo = document.createElement('div');
+            userSecondaryInfo.classList.add('user-secondary-info');
+            userSecondaryInfo.classList.add('sub-info');
 
-        itemInfo.appendChild(userStatus);
-        itemInfo.appendChild(userMainInfo);
-        itemInfo.appendChild(userSecondaryInfo);
-        itemButtons.appendChild(updateButton);
-        itemButtons.appendChild(deleteButton);
-        itemButtons.appendChild(blockButton);
+            var dateOfBirthSpan = document.createElement('span');
+            dateOfBirthSpan.classList.add('user-date-of-birth');
+            dateOfBirthSpan.textContent = `Date of birth: ${user.date_of_birth}`;
 
-        listItem.appendChild(itemInfo);
-        listItem.appendChild(itemButtons);
+            var addressSpan = document.createElement('span');
+            addressSpan.classList.add('user-address');
+            addressSpan.textContent = `Address: ${user.address}`;
 
-        existingUsersList.appendChild(listItem);
-    });
+            userSecondaryInfo.appendChild(dateOfBirthSpan);
+            userSecondaryInfo.appendChild(addressSpan);
 
-    adminContent.appendChild(existingUsersList);
+            var updateButton = document.createElement('button');
+            updateButton.classList.add('update-button');
+            updateButton.setAttribute('id', `update-button-${user.id}`);
+            updateButton.textContent = 'Update';
+            updateButton.addEventListener('click', () => updateUser(user.id));
+
+            var blockButton = document.createElement('button');
+            blockButton.classList.add('block-button');
+            blockButton.setAttribute('id', `block-button-${user.id}`);
+            blockButton.textContent = 'Block';
+            blockButton.addEventListener('click', () => blockUser(user.id));
+
+            var deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.setAttribute('id', `delete-button-${user.id}`);
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => deleteUser(user.id));
+
+            itemInfo.appendChild(userStatus);
+            itemInfo.appendChild(userMainInfo);
+            itemInfo.appendChild(userSecondaryInfo);
+            itemButtons.appendChild(updateButton);
+
+            if(isAdmin) {
+                itemButtons.appendChild(deleteButton);
+                itemButtons.appendChild(blockButton);
+            }
+
+            listItem.appendChild(itemInfo);
+            listItem.appendChild(itemButtons);
+
+            existingUsersList.appendChild(listItem);
+        });
+
+        adminContent.appendChild(existingUsersList);
+    })();
 }
 
 
@@ -667,7 +691,6 @@ async function updateUser(userId) {
     modalBackground.appendChild(modal);
 
     document.body.appendChild(modalBackground);
-
 }
 
 
@@ -837,7 +860,8 @@ async function createUser() {
                 })
             });
             let result = await response.json();
-            console.log(result);    
+            console.log(result.message);
+            alert(result.message);
         }
         closeModal();
         renderExistingUsers();
@@ -913,117 +937,143 @@ async function renderExistingCars() {
     let cars = dict.data;
     console.log(cars);
 
-    cars.forEach(car => {
-        var listItem = document.createElement('li');
-        listItem.classList.add('list-item');
-
-        var itemInfo = document.createElement('div');
-        itemInfo.classList.add('large-item-info');
-
-        var itemButtons = document.createElement('div');
-        itemButtons.classList.add('item-buttons');
-
-        var carOwner = document.createElement('div');
-        carOwner.classList.add('car-owner');
+    (async () => {
+        const isAdmin = await isAdminStatus();
         
-        var ownernameSpan = document.createElement('span');
-        ownernameSpan.classList.add('car-ownername');
-        ownernameSpan.textContent = `Ownername: ${car.username}`;
+        if(isAdmin) {
+            var createItem = document.createElement('li');
+            createItem.classList.add('list-item');
 
-        carOwner.appendChild(ownernameSpan);
+            var createItemButton = document.createElement('div');
+            createItemButton.classList.add('create-item-button');
 
-        var carMainInfo = document.createElement('div');
-        carMainInfo.classList.add('car-main-info');
-        carMainInfo.classList.add('sub-info');
-        
-        var brandSpan = document.createElement('span');
-        brandSpan.classList.add('car-brand');
-        brandSpan.textContent = `Brand: ${car.brand}`;
+            var createButton = document.createElement('button');
+            createButton.classList.add('form-button');
+            createButton.classList.add('create-button');
+            createButton.setAttribute('id', `create-button`);
+            createButton.textContent = 'Create Car';
+            createButton.addEventListener('click', () => createCar());
 
-        var modelSpan = document.createElement('span');
-        modelSpan.classList.add('car-model');
-        modelSpan.textContent = `Model: ${car.model}`;
-
-        var registrationPlateSpan = document.createElement('span');
-        registrationPlateSpan.classList.add('car-registration-plate');
-        registrationPlateSpan.textContent = `Plates: ${car.registration_plate}`;
-        
-        var priceSpan = document.createElement('span');
-        priceSpan.classList.add('car-price');
-        priceSpan.textContent = `Price: ${car.day_price}$`;
-
-        carMainInfo.appendChild(brandSpan);
-        carMainInfo.appendChild(modelSpan);
-        carMainInfo.appendChild(registrationPlateSpan);
-        carMainInfo.appendChild(priceSpan);
-
-        var carSecondaryInfo = document.createElement('div');
-        carSecondaryInfo.classList.add('car-secondary-info');
-        carSecondaryInfo.classList.add('sub-info');
-
-        var categorySpan = document.createElement('span');
-        categorySpan.classList.add('car-category');
-        categorySpan.textContent = `Category: ${car.category}`;
-
-        var fuelTypeSpan = document.createElement('span');
-        fuelTypeSpan.classList.add('car-fuel-type');
-        fuelTypeSpan.textContent = `Fuel type: ${car.fuel_type}`;
-
-        var seatsCountSpan = document.createElement('span');
-        seatsCountSpan.classList.add('car-seats-count');
-        seatsCountSpan.textContent = `Seats count: ${car.seats_count}`;
-
-        var colorSpan = document.createElement('span');
-        colorSpan.classList.add('car-color');
-        colorSpan.textContent = `Color: ${car.color}`;
-
-        carSecondaryInfo.appendChild(categorySpan);
-        carSecondaryInfo.appendChild(fuelTypeSpan);
-        carSecondaryInfo.appendChild(seatsCountSpan);
-        carSecondaryInfo.appendChild(colorSpan);
-
-        var carDescriptionInfo = document.createElement('div');
-        carDescriptionInfo.classList.add('car-description-info');
-        carDescriptionInfo.classList.add('sub-info');
-
-        var descriptionSpan = document.createElement('span');
-        descriptionSpan.classList.add('car-description');
-        var truncatedDescription = car.description.slice(0, 110);
-
-        if (car.description.length > 110) {
-            truncatedDescription += '...';
+            createItemButton.appendChild(createButton);
+            createItem.appendChild(createItemButton);
+            existingCarsList.appendChild(createItem);
         }
 
-        descriptionSpan.textContent = `Description: ${truncatedDescription}`;
+        cars.forEach(car => {
+            var listItem = document.createElement('li');
+            listItem.classList.add('list-item');
 
-        carDescriptionInfo.appendChild(descriptionSpan);
+            var itemInfo = document.createElement('div');
+            itemInfo.classList.add('large-item-info');
 
-        var updateButton = document.createElement('button');
-        updateButton.classList.add('update-button');
-        updateButton.setAttribute('id', `update-button-${car.id}`);
-        updateButton.textContent = 'Update';
-        updateButton.addEventListener('click', () => updateCar(car.id));
+            var itemButtons = document.createElement('div');
+            itemButtons.classList.add('item-buttons');
 
-        var deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        deleteButton.setAttribute('id', `delete-button-${car.id}`);
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => deleteCar(car.id));
+            var carOwner = document.createElement('div');
+            carOwner.classList.add('car-owner');
+            
+            var ownernameSpan = document.createElement('span');
+            ownernameSpan.classList.add('car-ownername');
+            ownernameSpan.textContent = `Ownername: ${car.username}`;
 
-        itemInfo.appendChild(carOwner);
-        itemInfo.appendChild(carMainInfo);
-        itemInfo.appendChild(carSecondaryInfo);
-        itemInfo.appendChild(carDescriptionInfo);
-        itemButtons.appendChild(updateButton);
-        itemButtons.appendChild(deleteButton);
+            carOwner.appendChild(ownernameSpan);
 
-        listItem.appendChild(itemInfo);
-        listItem.appendChild(itemButtons);
+            var carMainInfo = document.createElement('div');
+            carMainInfo.classList.add('car-main-info');
+            carMainInfo.classList.add('sub-info');
+            
+            var brandSpan = document.createElement('span');
+            brandSpan.classList.add('car-brand');
+            brandSpan.textContent = `Brand: ${car.brand}`;
 
-        existingCarsList.appendChild(listItem);
-    });
+            var modelSpan = document.createElement('span');
+            modelSpan.classList.add('car-model');
+            modelSpan.textContent = `Model: ${car.model}`;
 
-    adminContent.appendChild(existingCarsList);
+            var registrationPlateSpan = document.createElement('span');
+            registrationPlateSpan.classList.add('car-registration-plate');
+            registrationPlateSpan.textContent = `Plates: ${car.registration_plate}`;
+            
+            var priceSpan = document.createElement('span');
+            priceSpan.classList.add('car-price');
+            priceSpan.textContent = `Price: ${car.day_price}$`;
+
+            carMainInfo.appendChild(brandSpan);
+            carMainInfo.appendChild(modelSpan);
+            carMainInfo.appendChild(registrationPlateSpan);
+            carMainInfo.appendChild(priceSpan);
+
+            var carSecondaryInfo = document.createElement('div');
+            carSecondaryInfo.classList.add('car-secondary-info');
+            carSecondaryInfo.classList.add('sub-info');
+
+            var categorySpan = document.createElement('span');
+            categorySpan.classList.add('car-category');
+            categorySpan.textContent = `Category: ${car.category}`;
+
+            var fuelTypeSpan = document.createElement('span');
+            fuelTypeSpan.classList.add('car-fuel-type');
+            fuelTypeSpan.textContent = `Fuel type: ${car.fuel_type}`;
+
+            var seatsCountSpan = document.createElement('span');
+            seatsCountSpan.classList.add('car-seats-count');
+            seatsCountSpan.textContent = `Seats count: ${car.seats_count}`;
+
+            var colorSpan = document.createElement('span');
+            colorSpan.classList.add('car-color');
+            colorSpan.textContent = `Color: ${car.color}`;
+
+            carSecondaryInfo.appendChild(categorySpan);
+            carSecondaryInfo.appendChild(fuelTypeSpan);
+            carSecondaryInfo.appendChild(seatsCountSpan);
+            carSecondaryInfo.appendChild(colorSpan);
+
+            var carDescriptionInfo = document.createElement('div');
+            carDescriptionInfo.classList.add('car-description-info');
+            carDescriptionInfo.classList.add('sub-info');
+
+            var descriptionSpan = document.createElement('span');
+            descriptionSpan.classList.add('car-description');
+            var truncatedDescription = car.description.slice(0, 110);
+
+            if (car.description.length > 110) {
+                truncatedDescription += '...';
+            }
+
+            descriptionSpan.textContent = `Description: ${truncatedDescription}`;
+
+            carDescriptionInfo.appendChild(descriptionSpan);
+
+            var updateButton = document.createElement('button');
+            updateButton.classList.add('update-button');
+            updateButton.setAttribute('id', `update-button-${car.id}`);
+            updateButton.textContent = 'Update';
+            updateButton.addEventListener('click', () => updateCar(car.id));
+
+            var deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.setAttribute('id', `delete-button-${car.id}`);
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => deleteCar(car.id));
+
+            itemInfo.appendChild(carOwner);
+            itemInfo.appendChild(carMainInfo);
+            itemInfo.appendChild(carSecondaryInfo);
+            itemInfo.appendChild(carDescriptionInfo);
+            itemButtons.appendChild(updateButton);
+            
+            if(isAdmin) {
+                itemButtons.appendChild(deleteButton);
+            }
+
+            listItem.appendChild(itemInfo);
+            listItem.appendChild(itemButtons);
+
+            existingCarsList.appendChild(listItem);
+        });
+
+        adminContent.appendChild(existingCarsList);
+    })();
 }
 
 
@@ -1199,7 +1249,177 @@ async function updateCar(carId) {
     modalBackground.appendChild(modal);
 
     document.body.appendChild(modalBackground);
+}
 
+
+async function createCar() {
+    var modalBackground = document.createElement('div');
+    modalBackground.classList.add('modal-background');
+
+    var modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    var modalHeader = document.createElement('h2');
+    modalHeader.textContent = 'Update Car';
+
+    var usernameInput = document.createElement('input');
+    usernameInput.setAttribute('id', 'modal-username-input');
+    usernameInput.type = 'text';
+    usernameInput.placeholder = 'Enter username:';
+    
+    var brandInput = document.createElement('input');
+    brandInput.setAttribute('id', 'modal-brand-input');
+    brandInput.type = 'text';
+    brandInput.placeholder = 'Enter brand:';
+
+    var modelInput = document.createElement('input');
+    modelInput.setAttribute('id', 'modal-model-input');
+    modelInput.type = 'text';
+    modelInput.placeholder = 'Enter model:';
+
+    var categoryInput = document.createElement('input');
+    categoryInput.setAttribute('id', 'modal-category-input');
+    categoryInput.type = 'text';
+    categoryInput.placeholder = 'Enter category:';
+
+    var fuelTypeInput = document.createElement('input');
+    fuelTypeInput.setAttribute('id', 'modal-fuel-type-input');
+    fuelTypeInput.type = 'text';
+    fuelTypeInput.placeholder = 'Enter fuel type:';
+
+    var seatsCountInput = document.createElement('input');
+    seatsCountInput.setAttribute('id', 'modal-seats-count-input');
+    seatsCountInput.type = 'text';
+    seatsCountInput.placeholder = 'Enter seats count';
+
+    var colorInput = document.createElement('input');
+    colorInput.setAttribute('id', 'modal-color-input');
+    colorInput.type = 'text';
+    colorInput.placeholder = 'Enter color:';
+
+    var registrationPlateInput = document.createElement('input');
+    registrationPlateInput.setAttribute('id', 'modal-registration-plate-input');
+    registrationPlateInput.type = 'text';
+    registrationPlateInput.placeholder = 'Enter registration plate:';
+
+    var dayPriceInput = document.createElement('input');
+    dayPriceInput.setAttribute('id', 'modal-day-price-input');
+    dayPriceInput.type = 'text';
+    dayPriceInput.placeholder = 'Enter day price:';
+
+    var firstImageUrlInput = document.createElement('input');
+    firstImageUrlInput.setAttribute('id', 'modal-first-image-url-input');
+    firstImageUrlInput.type = 'text';
+    firstImageUrlInput.placeholder = 'Enter first umage url:';
+
+    var secImageUrlInput = document.createElement('input');
+    secImageUrlInput.setAttribute('id', 'modal-sec-image-url-input');
+    secImageUrlInput.type = 'text';
+    secImageUrlInput.placeholder = 'Enter second umage url:';
+
+    var thirdImageUrlInput = document.createElement('input');
+    thirdImageUrlInput.setAttribute('id', 'modal-third-image-url-input');
+    thirdImageUrlInput.type = 'text';
+    thirdImageUrlInput.placeholder = 'Enter third umage url:';
+
+    var descriptionInput = document.createElement('input');
+    descriptionInput.setAttribute('id', 'modal-description-input');
+    descriptionInput.type = 'text';
+    descriptionInput.placeholder = 'Enter description:';
+
+    var okButton = document.createElement('button');
+    okButton.classList.add('ok-button');
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', async function () {
+        var modalCarUsername = document.getElementById('modal-username-input').value.trim();
+        var modalCarBrand = document.getElementById('modal-brand-input').value.trim();
+        var modalCarModel = document.getElementById('modal-model-input').value.trim();
+        var modalCarCategory = document.getElementById('modal-category-input').value.trim();
+        var modalCarFuelType = document.getElementById('modal-fuel-type-input').value.trim();
+        var modalCarSeatsCount = document.getElementById('modal-seats-count-input').value.trim();
+        var modalCarColor = document.getElementById('modal-color-input').value.trim();
+        var modalCarRegistrationPlate = document.getElementById('modal-registration-plate-input').value.trim();
+        var modalCarDayPrice = document.getElementById('modal-day-price-input').value.trim();
+        var modalCarFirstImageUrl = document.getElementById('modal-first-image-url-input').value.trim();
+        var modalCarSecImageUrl = document.getElementById('modal-sec-image-url-input').value.trim();
+        var modalCarThirdImageUrl = document.getElementById('modal-third-image-url-input').value.trim();
+        var modalCarDescription = document.getElementById('modal-description-input').value.trim();
+
+        const categories = ['sedan', 'hatchback', 'wagon', 'SUV', 'pickup', 'van'];
+        const fuelTypes = ['diesel', 'petrol', 'electric', 'hybrid'];
+        let isValid = true;
+
+        if (!categories.includes(modalCarCategory)) {
+            isValid = false;
+            alert('Category field is not validated.');
+        }
+
+        if (!fuelTypes.includes(modalCarFuelType)) {
+            isValid = false;
+            alert('Fuel type field is not validated.');
+        }
+
+        if (!modalCarFirstImageUrl || !modalCarSecImageUrl || !modalCarThirdImageUrl) {
+            isValid = false;
+            alert('All url fields are required.');
+        }
+
+        if(isValid) {
+            let response = await fetch('http://127.0.0.1:8000/cars/stuff_create_car', {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "username" : `${modalCarUsername}`,
+                    "brand" : `${modalCarBrand}`,
+                    "model" : `${modalCarModel}`,
+                    "category" : `${modalCarCategory}`,
+                    "fuel_type" : `${modalCarFuelType}`,
+                    "seats_count" : `${modalCarSeatsCount}`,
+                    "color" : `${modalCarColor}`,
+                    "registration_plate" : `${modalCarRegistrationPlate}`,
+                    "day_price" : `${modalCarDayPrice}`,
+                    "first_image_url" : `${modalCarFirstImageUrl}`,
+                    "sec_image_url" : `${modalCarSecImageUrl}`,
+                    "third_image_url" : `${modalCarThirdImageUrl}`,
+                    "description" : `${modalCarDescription}`,
+                })
+            });
+            let result = await response.json();
+            console.log(result.message);
+            alert(result.message);
+        }
+        closeModal();
+        renderExistingCars();
+    });
+
+    var cancelButton = document.createElement('button');
+    cancelButton.classList.add('cancel-button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', closeModal);
+
+    modal.appendChild(modalHeader);
+    modal.appendChild(usernameInput);
+    modal.appendChild(brandInput);
+    modal.appendChild(modelInput);
+    modal.appendChild(categoryInput);
+    modal.appendChild(fuelTypeInput);
+    modal.appendChild(seatsCountInput);
+    modal.appendChild(colorInput);
+    modal.appendChild(registrationPlateInput);
+    modal.appendChild(dayPriceInput);
+    modal.appendChild(firstImageUrlInput);
+    modal.appendChild(secImageUrlInput);
+    modal.appendChild(thirdImageUrlInput);
+    modal.appendChild(descriptionInput);
+    modal.appendChild(okButton);
+    modal.appendChild(cancelButton);
+
+    modalBackground.appendChild(modal);
+
+    document.body.appendChild(modalBackground);
 }
 
 
@@ -1235,112 +1455,138 @@ async function renderExistingRents() {
     let rents = dict.data;
     console.log(rents);
 
-    rents.forEach(rent => {
-        var listItem = document.createElement('li');
-        listItem.classList.add('list-item');
-
-        var itemInfo = document.createElement('div');
-        itemInfo.classList.add('large-item-info');
-
-        var itemButtons = document.createElement('div');
-        itemButtons.classList.add('item-buttons');
-
-        var rentUsernameInfo = document.createElement('div');
-        rentUsernameInfo.classList.add('rent-user');
+    (async () => {
+        const isAdmin = await isAdminStatus();
         
-        var usernameSpan = document.createElement('span');
-        usernameSpan.classList.add('rent-username');
-        usernameSpan.textContent = `Rentername: ${rent.username}`;
- 
-        rentUsernameInfo.appendChild(usernameSpan);
+        if(isAdmin) {
+            var createItem = document.createElement('li');
+            createItem.classList.add('list-item');
 
-        var rentCarInfo = document.createElement('div');
-        rentCarInfo.classList.add('car-info');
-        rentCarInfo.classList.add('sub-info');
-        
-        var brandSpan = document.createElement('span');
-        brandSpan.classList.add('car-brand');
-        brandSpan.textContent = `Brand: ${rent.brand}`;
+            var createItemButton = document.createElement('div');
+            createItemButton.classList.add('create-item-button');
 
-        var modelSpan = document.createElement('span');
-        modelSpan.classList.add('car-model');
-        modelSpan.textContent = `Model: ${rent.model}`;
+            var createButton = document.createElement('button');
+            createButton.classList.add('form-button');
+            createButton.classList.add('create-button');
+            createButton.setAttribute('id', `create-button`);
+            createButton.textContent = 'Create Rental Deal';
+            createButton.addEventListener('click', () => createRentalDeal());
 
-        var registrationPlateSpan = document.createElement('span');
-        registrationPlateSpan.classList.add('car-registration-plate');
-        registrationPlateSpan.textContent = `Plates: ${rent.registration_plate}`;
+            createItemButton.appendChild(createButton);
+            createItem.appendChild(createItemButton);
+            existingRentsList.appendChild(createItem);
+        }
 
-        rentCarInfo.appendChild(brandSpan);
-        rentCarInfo.appendChild(modelSpan);
-        rentCarInfo.appendChild(registrationPlateSpan);
+        rents.forEach(rent => {
+            var listItem = document.createElement('li');
+            listItem.classList.add('list-item');
 
-        var rentLocationInfo = document.createElement('div');
-        rentLocationInfo.classList.add('rent-location-info');
-        rentLocationInfo.classList.add('sub-info');
+            var itemInfo = document.createElement('div');
+            itemInfo.classList.add('large-item-info');
 
-        var receptionPointSpan = document.createElement('span');
-        receptionPointSpan.classList.add('rent-reception-point');
-        receptionPointSpan.textContent = `Start location: ${rent.reception_point}`;
+            var itemButtons = document.createElement('div');
+            itemButtons.classList.add('item-buttons');
 
-        var issuePointSpan = document.createElement('span');
-        issuePointSpan.classList.add('rent-issue-point');
-        issuePointSpan.textContent = `End location: ${rent.issue_point}`;
+            var rentUsernameInfo = document.createElement('div');
+            rentUsernameInfo.classList.add('rent-user');
+            
+            var usernameSpan = document.createElement('span');
+            usernameSpan.classList.add('rent-username');
+            usernameSpan.textContent = `Rentername: ${rent.username}`;
+    
+            rentUsernameInfo.appendChild(usernameSpan);
 
-        rentLocationInfo.appendChild(receptionPointSpan);
-        rentLocationInfo.appendChild(issuePointSpan);
+            var rentCarInfo = document.createElement('div');
+            rentCarInfo.classList.add('car-info');
+            rentCarInfo.classList.add('sub-info');
+            
+            var brandSpan = document.createElement('span');
+            brandSpan.classList.add('car-brand');
+            brandSpan.textContent = `Brand: ${rent.brand}`;
 
-        var rentDateInfo = document.createElement('div');
-        rentDateInfo.classList.add('rent-date-info');
-        rentDateInfo.classList.add('sub-info');
+            var modelSpan = document.createElement('span');
+            modelSpan.classList.add('car-model');
+            modelSpan.textContent = `Model: ${rent.model}`;
 
-        var startDateSpan = document.createElement('span');
-        startDateSpan.classList.add('rent-start-date');
-        startDateSpan.textContent = `Start date: ${rent.start_date}`;
+            var registrationPlateSpan = document.createElement('span');
+            registrationPlateSpan.classList.add('car-registration-plate');
+            registrationPlateSpan.textContent = `Plates: ${rent.registration_plate}`;
 
-        var endDateSpan = document.createElement('span');
-        endDateSpan.classList.add('rent-end-date');
-        endDateSpan.textContent = `End date: ${rent.end_date}`;
+            rentCarInfo.appendChild(brandSpan);
+            rentCarInfo.appendChild(modelSpan);
+            rentCarInfo.appendChild(registrationPlateSpan);
 
-        rentDateInfo.appendChild(startDateSpan);
-        rentDateInfo.appendChild(endDateSpan);
+            var rentLocationInfo = document.createElement('div');
+            rentLocationInfo.classList.add('rent-location-info');
+            rentLocationInfo.classList.add('sub-info');
 
-        var rentPriceInfo = document.createElement('div');
-        rentPriceInfo.classList.add('rent-price-info');
-        rentPriceInfo.classList.add('sub-info');
+            var receptionPointSpan = document.createElement('span');
+            receptionPointSpan.classList.add('rent-reception-point');
+            receptionPointSpan.textContent = `Start location: ${rent.reception_point}`;
 
-        var priceSpan = document.createElement('span');
-        priceSpan.classList.add('rent-price');
-        priceSpan.textContent = `Total price: ${rent.total_price}$`;
+            var issuePointSpan = document.createElement('span');
+            issuePointSpan.classList.add('rent-issue-point');
+            issuePointSpan.textContent = `End location: ${rent.issue_point}`;
 
-        rentPriceInfo.appendChild(priceSpan);
+            rentLocationInfo.appendChild(receptionPointSpan);
+            rentLocationInfo.appendChild(issuePointSpan);
 
-        var updateButton = document.createElement('button');
-        updateButton.classList.add('update-button');
-        updateButton.setAttribute('id', `update-button-${rent.id}`);
-        updateButton.textContent = 'Update';
-        updateButton.addEventListener('click', () => updateRent(rent.id));
+            var rentDateInfo = document.createElement('div');
+            rentDateInfo.classList.add('rent-date-info');
+            rentDateInfo.classList.add('sub-info');
 
-        var deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        deleteButton.setAttribute('id', `delete-button-${rent.id}`);
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => deleteRent(rent.id));
+            var startDateSpan = document.createElement('span');
+            startDateSpan.classList.add('rent-start-date');
+            startDateSpan.textContent = `Start date: ${rent.start_date}`;
 
-        itemInfo.appendChild(rentUsernameInfo);
-        itemInfo.appendChild(rentCarInfo);
-        itemInfo.appendChild(rentLocationInfo);
-        itemInfo.appendChild(rentDateInfo);
-        itemInfo.appendChild(rentPriceInfo);
-        itemButtons.appendChild(updateButton);
-        itemButtons.appendChild(deleteButton);
+            var endDateSpan = document.createElement('span');
+            endDateSpan.classList.add('rent-end-date');
+            endDateSpan.textContent = `End date: ${rent.end_date}`;
 
-        listItem.appendChild(itemInfo);
-        listItem.appendChild(itemButtons);
+            rentDateInfo.appendChild(startDateSpan);
+            rentDateInfo.appendChild(endDateSpan);
 
-        existingRentsList.appendChild(listItem);
-    });
+            var rentPriceInfo = document.createElement('div');
+            rentPriceInfo.classList.add('rent-price-info');
+            rentPriceInfo.classList.add('sub-info');
 
-    adminContent.appendChild(existingRentsList);
+            var priceSpan = document.createElement('span');
+            priceSpan.classList.add('rent-price');
+            priceSpan.textContent = `Total price: ${rent.total_price}$`;
+
+            rentPriceInfo.appendChild(priceSpan);
+
+            var updateButton = document.createElement('button');
+            updateButton.classList.add('update-button');
+            updateButton.setAttribute('id', `update-button-${rent.id}`);
+            updateButton.textContent = 'Update';
+            updateButton.addEventListener('click', () => updateRent(rent.id));
+
+            var deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.setAttribute('id', `delete-button-${rent.id}`);
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => deleteRent(rent.id));
+
+            itemInfo.appendChild(rentUsernameInfo);
+            itemInfo.appendChild(rentCarInfo);
+            itemInfo.appendChild(rentLocationInfo);
+            itemInfo.appendChild(rentDateInfo);
+            itemInfo.appendChild(rentPriceInfo);
+            itemButtons.appendChild(updateButton);
+            
+            if(isAdmin) {
+                itemButtons.appendChild(deleteButton);
+            }
+
+            listItem.appendChild(itemInfo);
+            listItem.appendChild(itemButtons);
+
+            existingRentsList.appendChild(listItem);
+        });
+
+        adminContent.appendChild(existingRentsList);
+    })();
 }
 
 
@@ -1470,6 +1716,108 @@ async function deleteRent(rentalDealId) {
 }
 
 
+async function createRentalDeal() {
+    var modalBackground = document.createElement('div');
+    modalBackground.classList.add('modal-background');
+
+    var modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    var modalHeader = document.createElement('h2');
+    modalHeader.textContent = 'Update Rental Deal';
+
+    var usernameInput = document.createElement('input');
+    usernameInput.setAttribute('id', 'modal-username-input');
+    usernameInput.type = 'text';
+    usernameInput.placeholder = 'Enter username:';
+
+    var registrationPlateInput = document.createElement('input');
+    registrationPlateInput.setAttribute('id', 'modal-registration-plate-input');
+    registrationPlateInput.type = 'text';
+    registrationPlateInput.placeholder = 'Enter registration plate:';
+    
+    var startDateInput = document.createElement('input');
+    startDateInput.setAttribute('id', 'modal-start-date-input');
+    startDateInput.type = 'text';
+    startDateInput.placeholder = 'Enter start date:';
+
+    var endDateInput = document.createElement('input');
+    endDateInput.setAttribute('id', 'modal-end-date-input');
+    endDateInput.type = 'text';
+    endDateInput.placeholder = 'Enter end date:';
+
+    var receptionPointInput = document.createElement('input');
+    receptionPointInput.setAttribute('id', 'modal-reception-point-input');
+    receptionPointInput.type = 'text';
+    receptionPointInput.placeholder = 'Enter start location:';
+
+    var issuePointInput = document.createElement('input');
+    issuePointInput.setAttribute('id', 'modal-issue-point-input');
+    issuePointInput.type = 'text';
+    issuePointInput.placeholder = 'Enter end point:';
+
+    var totalPriceInput = document.createElement('input');
+    totalPriceInput.setAttribute('id', 'modal-total-price-input');
+    totalPriceInput.type = 'text';
+    totalPriceInput.placeholder = 'Enter total price';
+
+    var okButton = document.createElement('button');
+    okButton.classList.add('ok-button');
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', async function () {
+        var modalRentUsername = document.getElementById('modal-username-input').value.trim();
+        var modalRentRegistrationPlate = document.getElementById('modal-registration-plate-input').value.trim();
+        var modalRentStartDate = document.getElementById('modal-start-date-input').value.trim();
+        var modalRentEndDate = document.getElementById('modal-end-date-input').value.trim();
+        var modalRentReceptionPoint = document.getElementById('modal-reception-point-input').value.trim();
+        var modalRentIssuePoint = document.getElementById('modal-issue-point-input').value.trim();
+        var modalRentTotalPrice = document.getElementById('modal-total-price-input').value.trim();
+
+        let response = await fetch('http://127.0.0.1:8000/rental_deal/stuff_create_rental_deal', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "username" : `${modalRentUsername}`,
+                "registration_plate" : `${modalRentRegistrationPlate}`,
+                'start_date': `${modalRentStartDate}`,
+                'end_date': `${modalRentEndDate}`, 
+                'reception_point': `${modalRentReceptionPoint}`,
+                'issue_point': `${modalRentIssuePoint}`,
+                'total_price': `${modalRentTotalPrice}`,
+            })
+        });
+        let result = await response.json();
+        console.log(result.message);
+        alert(result.message);
+        closeModal();
+        renderExistingRents();
+    });
+
+    var cancelButton = document.createElement('button');
+    cancelButton.classList.add('cancel-button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', closeModal);
+
+    modal.appendChild(modalHeader);
+    modal.appendChild(usernameInput);
+    modal.appendChild(registrationPlateInput);
+    modal.appendChild(startDateInput);
+    modal.appendChild(endDateInput);
+    modal.appendChild(receptionPointInput);
+    modal.appendChild(issuePointInput);
+    modal.appendChild(totalPriceInput);
+    modal.appendChild(okButton);
+    modal.appendChild(cancelButton);
+
+    modalBackground.appendChild(modal);
+
+    document.body.appendChild(modalBackground);
+}
+
+
 async function renderExistingReviews() {
     var adminContent = document.querySelector('.admin-content');
     adminContent.innerHTML = '';
@@ -1486,85 +1834,112 @@ async function renderExistingReviews() {
     let dict = await response.json();
     let reviews = dict.data;
 
-    reviews.forEach(review => {
-        var listItem = document.createElement('li');
-        listItem.classList.add('list-item');
-
-        var itemInfo = document.createElement('div');
-        itemInfo.classList.add('large-item-info');
-
-        var itemButtons = document.createElement('div');
-        itemButtons.classList.add('item-buttons');
-
-        var usernameInfo = document.createElement('div');
-        usernameInfo.classList.add('review-username-info');
-
-        var usernameSpan = document.createElement('span');
-        usernameSpan.classList.add('review-username');
-        usernameSpan.textContent = `Reviewer: ${review.username}`;
-
-        usernameInfo.appendChild(usernameSpan);
-
-        var carInfo = document.createElement('div');
-        carInfo.classList.add('review-car-info');
-        carInfo.classList.add('sub-info');
+    (async () => {
+        const isAdmin = await isAdminStatus();
         
-        var brandSpan = document.createElement('span');
-        brandSpan.classList.add('review-brand');
-        brandSpan.textContent = `Brand: ${review.brand}`;
+        if(isAdmin) {
+            var createItem = document.createElement('li');
+            createItem.classList.add('list-item');
 
-        var modelSpan = document.createElement('span');
-        modelSpan.classList.add('review-model');
-        modelSpan.textContent = `Model: ${review.model}`;
+            var createItemButton = document.createElement('div');
+            createItemButton.classList.add('create-item-button');
 
-        var registrationPlateSpan = document.createElement('span');
-        registrationPlateSpan.classList.add('review-registration_plate');
-        registrationPlateSpan.textContent = `Registration plate: ${review.registration_plate}`;
+            var createButton = document.createElement('button');
+            createButton.classList.add('form-button');
+            createButton.classList.add('create-button');
+            createButton.setAttribute('id', `create-button`);
+            createButton.textContent = 'Create Review';
+            createButton.addEventListener('click', () => createReview());
 
-        carInfo.appendChild(brandSpan);
-        carInfo.appendChild(modelSpan);
-        carInfo.appendChild(registrationPlateSpan);
-
-        var messageInfo = document.createElement('div');
-        messageInfo.classList.add('review-message-info');
-        messageInfo.classList.add('sub-info');
-
-        var messageSpan = document.createElement('span');
-        messageSpan.classList.add('review-message');
-        var truncatedMessage = review.message.slice(0, 110);
-
-        if (review.message.length > 110) {
-            truncatedMessage += '...';
+            createItemButton.appendChild(createButton);
+            createItem.appendChild(createItemButton);
+            existingReviewsList.appendChild(createItem);
         }
-        messageSpan.textContent = `Message: ${truncatedMessage}`;
 
-        messageInfo.appendChild(messageSpan);
+        reviews.forEach(review => {
+            var listItem = document.createElement('li');
+            listItem.classList.add('list-item');
 
-        var updateButton = document.createElement('button');
-        updateButton.classList.add('update-button');
-        updateButton.setAttribute('id', `update-button-${review.id}`);
-        updateButton.textContent = 'Update';
-        updateButton.addEventListener('click', () => updateReview(review.id));
+            var itemInfo = document.createElement('div');
+            itemInfo.classList.add('large-item-info');
 
-        var deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        deleteButton.setAttribute('id', `delete-button-${review.id}`);
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => deleteReview(review.id));
+            var itemButtons = document.createElement('div');
+            itemButtons.classList.add('item-buttons');
 
-        itemInfo.appendChild(usernameInfo);
-        itemInfo.appendChild(carInfo);
-        itemInfo.appendChild(messageInfo);
-        itemButtons.appendChild(updateButton);
-        itemButtons.appendChild(deleteButton);
+            var usernameInfo = document.createElement('div');
+            usernameInfo.classList.add('review-username-info');
 
-        listItem.appendChild(itemInfo);
-        listItem.appendChild(itemButtons);
+            var usernameSpan = document.createElement('span');
+            usernameSpan.classList.add('review-username');
+            usernameSpan.textContent = `Reviewer: ${review.username}`;
 
-        existingReviewsList.appendChild(listItem);
-    });
+            usernameInfo.appendChild(usernameSpan);
 
-    adminContent.appendChild(existingReviewsList);
+            var carInfo = document.createElement('div');
+            carInfo.classList.add('review-car-info');
+            carInfo.classList.add('sub-info');
+            
+            var brandSpan = document.createElement('span');
+            brandSpan.classList.add('review-brand');
+            brandSpan.textContent = `Brand: ${review.brand}`;
+
+            var modelSpan = document.createElement('span');
+            modelSpan.classList.add('review-model');
+            modelSpan.textContent = `Model: ${review.model}`;
+
+            var registrationPlateSpan = document.createElement('span');
+            registrationPlateSpan.classList.add('review-registration_plate');
+            registrationPlateSpan.textContent = `Registration plate: ${review.registration_plate}`;
+
+            carInfo.appendChild(brandSpan);
+            carInfo.appendChild(modelSpan);
+            carInfo.appendChild(registrationPlateSpan);
+
+            var messageInfo = document.createElement('div');
+            messageInfo.classList.add('review-message-info');
+            messageInfo.classList.add('sub-info');
+
+            var messageSpan = document.createElement('span');
+            messageSpan.classList.add('review-message');
+            var truncatedMessage = review.message.slice(0, 110);
+
+            if (review.message.length > 110) {
+                truncatedMessage += '...';
+            }
+            messageSpan.textContent = `Message: ${truncatedMessage}`;
+
+            messageInfo.appendChild(messageSpan);
+
+            var updateButton = document.createElement('button');
+            updateButton.classList.add('update-button');
+            updateButton.setAttribute('id', `update-button-${review.id}`);
+            updateButton.textContent = 'Update';
+            updateButton.addEventListener('click', () => updateReview(review.id));
+
+            var deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.setAttribute('id', `delete-button-${review.id}`);
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => deleteReview(review.id));
+
+            itemInfo.appendChild(usernameInfo);
+            itemInfo.appendChild(carInfo);
+            itemInfo.appendChild(messageInfo);
+            
+            if(isAdmin) {
+                itemButtons.appendChild(updateButton);
+            }
+
+            itemButtons.appendChild(deleteButton);
+
+            listItem.appendChild(itemInfo);
+            listItem.appendChild(itemButtons);
+
+            existingReviewsList.appendChild(listItem);
+        });
+
+        adminContent.appendChild(existingReviewsList);
+    })();
 }
 
 
@@ -1635,6 +2010,77 @@ async function updateReview(reviewId) {
     cancelButton.addEventListener('click', closeModal);
 
     modal.appendChild(modalHeader);
+    modal.appendChild(messageInput);
+    modal.appendChild(okButton);
+    modal.appendChild(cancelButton);
+
+    modalBackground.appendChild(modal);
+
+    document.body.appendChild(modalBackground);
+}
+
+
+async function createReview() {
+    var modalBackground = document.createElement('div');
+    modalBackground.classList.add('modal-background');
+
+    var modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    var modalHeader = document.createElement('h2');
+    modalHeader.textContent = 'Update Review';
+
+    var usernameInput = document.createElement('input');
+    usernameInput.setAttribute('id', 'modal-username-input');
+    usernameInput.type = 'text';
+    usernameInput.placeholder = 'Enter username:';
+
+    var registrationPlateInput = document.createElement('input');
+    registrationPlateInput.setAttribute('id', 'modal-registration-plate-input');
+    registrationPlateInput.type = 'text';
+    registrationPlateInput.placeholder = 'Enter registration plate:';
+    
+    var messageInput = document.createElement('input');
+    messageInput.setAttribute('id', 'modal-message-input');
+    messageInput.type = 'text';
+    messageInput.placeholder = 'Enter message:';
+
+    var okButton = document.createElement('button');
+    okButton.classList.add('ok-button');
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', async function () {
+        var modalReviewUsername = document.getElementById('modal-username-input').value.trim();
+        var modalReviewRegistrationPlate = document.getElementById('modal-registration-plate-input').value.trim();
+        var modalReviewMessage = document.getElementById('modal-message-input').value.trim();
+        console.log(modalReviewMessage);
+
+        let response = await fetch('http://127.0.0.1:8000/reviews/stuff_review_create', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "username" : `${modalReviewUsername}`,
+                "registration_plate" : `${modalReviewRegistrationPlate}`,
+                'message': `${modalReviewMessage}`,
+            })
+        });
+        let result = await response.json();
+        console.log(result.message);
+        alert(result.message);
+        closeModal();
+        renderExistingReviews();
+    });
+
+    var cancelButton = document.createElement('button');
+    cancelButton.classList.add('cancel-button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', closeModal);
+
+    modal.appendChild(modalHeader);
+    modal.appendChild(usernameInput);
+    modal.appendChild(registrationPlateInput);
     modal.appendChild(messageInput);
     modal.appendChild(okButton);
     modal.appendChild(cancelButton);

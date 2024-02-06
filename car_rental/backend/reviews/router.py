@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import func, select, insert, update, delete, join
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,7 +7,7 @@ from database import get_async_session
 from .reviews import review as review
 from users import user as user
 from cars import car as car
-from .schemas import ReviewCreate, ReviewInfo, ReviewUpdate
+from .schemas import ReviewCreate, ReviewInfo, ReviewUpdate, StuffReviewCreate
 from typing import List
 
 
@@ -31,6 +31,47 @@ async def create_review(new_review: ReviewCreate, session: AsyncSession = Depend
     return JSONResponse(content={"message": "Review succesfully created"}, status_code=200)
 
 
+@router.post("/stuff_review_create")
+async def stuff_create_review(new_review: StuffReviewCreate, session: AsyncSession = Depends(get_async_session)):
+    try:
+        user_id_query = select(user.c.id).where(user.c.username == new_review.username)
+        user_id_result = await session.execute(user_id_query)
+        
+        try:
+            user_id = user_id_result.scalar_one()
+        except exc.NoResultFound:
+            raise HTTPException(
+                status_code=400,
+                detail="User not found"
+            )
+            
+        car_id_query = select(car.c.id).where(car.c.registration_plate == new_review.registration_plate)
+        car_id_result = await session.execute(car_id_query)
+        
+        try:
+            car_id = car_id_result.scalar_one()
+        except exc.NoResultFound:
+            raise HTTPException(
+                status_code=400,
+                detail="Car with this registration plate doesn't exists."
+            )
+
+        review_insert = insert(review).values(
+            user_id=user_id,
+            car_id=car_id,
+            message=new_review.message
+        )
+        await session.execute(review_insert)
+        await session.commit()
+    except HTTPException as e:
+        return JSONResponse(content={"message": e.detail}, status_code=e.status_code)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    return JSONResponse(content={"message": "Review succesfully created"}, status_code=200)
+
+
 @router.get("/review/{review_id}")
 async def get_review(review_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
@@ -44,11 +85,10 @@ async def get_review(review_id: int, session: AsyncSession = Depends(get_async_s
         return JSONResponse(content={"message": "Error"}, status_code=400)
 
 
-
 @router.put("/review_update/{review_id}")
 async def update_review(review_id: int, new_message: ReviewUpdate, session: AsyncSession = Depends(get_async_session)):
     try:
-        stmt = update(review).where(review.c.id == review_id).values(**new_message.model_dump())
+        stmt = update(review).where(review.c.id == review_id).values(**new_message.model_dump() )
         await session.execute(stmt)
         await session.commit()
         return JSONResponse(content={"message": "Review data updated"}, status_code=200)
