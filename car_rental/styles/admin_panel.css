@@ -247,3 +247,8 @@ body {
     left: 58%;
     transform: translate(-50%, -50%);
 }
+
+.blocked-data-message span {
+    font-weight: bold;
+    font-size: 25px;
+}

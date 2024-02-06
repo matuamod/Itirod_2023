@@ -34,3 +34,10 @@ class UserUpdate(BaseModel):
 class UserLogin(BaseModel):
     username : str
     password : str
+    
+    
+class BlockedUserData(BaseModel):
+    id : int
+    email : str
+    telephone : str
+    license : str

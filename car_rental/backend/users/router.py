@@ -6,7 +6,7 @@ from sqlalchemy import exc
 from database import get_async_session
 from .users import user
 from .blocked_users import blocked_user
-from .schemas import UserInfo, UserCreate, UserUpdate, UserLogin
+from .schemas import UserInfo, UserCreate, UserUpdate, UserLogin, BlockedUserData
 from typing import List
 
 router = APIRouter(
@@ -50,6 +50,26 @@ async def get_users(session: AsyncSession = Depends(get_async_session)):
         return JSONResponse(content={"message": "Error"}, status_code=400)
     
     
+@router.get("/get_blocked_data", response_model=List[BlockedUserData])
+async def get_blocked_data(session: AsyncSession = Depends(get_async_session)):
+    try:
+        count_blocked_users = await session.scalar(select(func.count()).select_from(blocked_user))
+        
+        if count_blocked_users == 0:
+            return JSONResponse(content=[{"message": "There are no blocked users in the system"}], status_code=200)
+        else:
+            blocked_users_query = select(blocked_user)
+            
+            result = await session.execute(blocked_users_query)
+            blocked_user_list = [dict(r._mapping) for r in result]
+            
+            return JSONResponse(content={"data": blocked_user_list}, status_code=200)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    
+    
 @router.put("/stuff_update_user/{user_id}")
 async def stuff_update_user(user_id: int, user_update: UserCreate , session: AsyncSession = Depends(get_async_session)):
     try:
@@ -85,6 +105,25 @@ async def delete_user(user_id: int, session: AsyncSession = Depends(get_async_se
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=400)
     return JSONResponse(content={"message": "User succesfully deleted"}, status_code=200)
+
+
+@router.delete("/delete_blocked_data/{blocked_user_id}")
+async def delete_blocked_data(blocked_user_id: int, session: AsyncSession = Depends(get_async_session)):
+    try:
+        count_before = await session.scalar(select(func.count()).select_from(blocked_user))
+        stmt = delete(blocked_user).where(blocked_user.c.id == blocked_user_id)
+        await session.execute(stmt)
+        await session.commit()
+        count_after = await session.scalar(select(func.count()).select_from(blocked_user))
+        
+        if count_before == count_after:
+            raise Exception
+        
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    return JSONResponse(content={"message": "Blocked data succesfully deleted"}, status_code=200)
 
 
 @router.post("/block_user/{user_id}")

@@ -22,8 +22,7 @@ async function GetStuffAbilities() {
             ManagerControlItem.appendChild(ManagerControlLink);
             stuffAbilitiesList.appendChild(ManagerControlItem);
             GetExistingManagers();
-            renderExistingManagers();
-            
+            renderExistingManagers();            
         } else {
             document.querySelector(".stuff_info").textContent = `Manager: ${result.username}`;
             renderExistingUsers();
@@ -60,6 +59,16 @@ async function GetStuffAbilities() {
         ReviewControlItem.appendChild(ReviewControlLink);
         stuffAbilitiesList.appendChild(ReviewControlItem);
         GetExistingReviews();
+
+        if(result.is_admin) {
+            var BlockedDataControlItem = document.createElement('li');
+            BlockedDataControlItem.setAttribute("id", "blocked-data-control-li");
+            var BlockedDataControlLink = document.createElement('a');
+            BlockedDataControlLink.textContent = 'Blocked data control';
+            BlockedDataControlItem.appendChild(BlockedDataControlLink);
+            stuffAbilitiesList.appendChild(BlockedDataControlItem);
+            GetExistingBlockedUsers();
+        }
 
         var LogoutItem = document.createElement('li');
         LogoutItem.setAttribute("id", "logout-li");
@@ -2100,6 +2109,110 @@ async function deleteReview(reviewId) {
         });
 
         renderExistingReviews();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
+async function renderExistingBlockedUsers() {
+    var adminContent = document.querySelector('.admin-content');
+    adminContent.innerHTML = '';
+
+    var existingBlockedUsersList = document.createElement('ul');
+    existingBlockedUsersList.classList.add('existing-list');
+
+    let response = await fetch('http://127.0.0.1:8000/users/get_blocked_data', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let blockedUsers = dict.data;
+
+    blockedUsers.forEach(blockedUser => {
+        var listItem = document.createElement('li');
+        listItem.classList.add('list-item');
+
+        var itemInfo = document.createElement('div');
+        itemInfo.classList.add('large-item-info');
+
+        var itemButtons = document.createElement('div');
+        itemButtons.classList.add('item-buttons');
+
+        var blockedDataMessage = document.createElement('div');
+        blockedDataMessage.classList.add('blocked-data-message');
+        blockedDataMessage.classList.add('sub-info');
+
+        var blockedDataSpan = document.createElement('span');
+        blockedDataSpan.classList.add('blocked-data');
+        blockedDataSpan.textContent = 'Blocked data:';
+
+        blockedDataMessage.appendChild(blockedDataSpan);
+
+        var blockedDataInfo = document.createElement('div');
+        blockedDataInfo.classList.add('blocked-data-info');
+        blockedDataInfo.classList.add('sub-info');
+
+        var emailSpan = document.createElement('span');
+        emailSpan.classList.add('blocked-data-email');
+        emailSpan.textContent = `Email: ${blockedUser.email}`;
+
+        var telephoneSpan = document.createElement('span');
+        telephoneSpan.classList.add('blocked-data-telephone');
+        telephoneSpan.textContent = `Telephone: ${blockedUser.telephone}`;
+
+        var licenseSpan = document.createElement('span');
+        licenseSpan.classList.add('blocked-data-license');
+        licenseSpan.textContent = `License: ${blockedUser.license}`;
+
+        blockedDataInfo.appendChild(emailSpan);
+        blockedDataInfo.appendChild(telephoneSpan);
+        blockedDataInfo.appendChild(licenseSpan);
+
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.setAttribute('id', `delete-button-${blockedUser.id}`);
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => deleteBlockedUser(blockedUser.id));
+
+        itemInfo.appendChild(blockedDataMessage);
+        itemInfo.appendChild(blockedDataInfo);
+        
+        itemButtons.appendChild(deleteButton);
+
+        listItem.appendChild(itemInfo);
+        listItem.appendChild(itemButtons);
+
+        existingBlockedUsersList.appendChild(listItem);
+    });
+
+    adminContent.appendChild(existingBlockedUsersList);
+}
+
+
+function GetExistingBlockedUsers() {
+    var blockedUsersControlLi = document.getElementById("blocked-data-control-li");
+
+    if(blockedUsersControlLi) {
+        blockedUsersControlLi.addEventListener('click', function(event) {
+            event.preventDefault();  
+            renderExistingBlockedUsers();
+        });
+    }
+}
+
+
+async function deleteBlockedUser(blockedUserId) {
+    var confirmDelete = window.confirm("Are you sure you want to delete blocked user data?");
+    
+    if(confirmDelete) {
+        await fetch(`http://127.0.0.1:8000/users/delete_blocked_data/${blockedUserId}`, {
+        method: 'DELETE',
+        });
+
+        renderExistingBlockedUsers();
     } else {
         console.log("Passed");
     }
