@@ -4,7 +4,8 @@ import {Login, Logout} from './header.js';
 await Login();
 Logout();
 
-const upload = Upload({ apiKey: "public_12a1ynWGe8T2VyocVZmkqtwS3m9i" });
+const upload = Upload({ apiKey: "public_W142iSzB2jS8j9MgM8aQhTj3raEk" });
+// const upload = Upload({ apiKey: "public_12a1ynWGe8T2VyocVZmkqtwS3m9i" });
 // const upload = Upload({ apiKey: "free" });
 
 const button = document.querySelector('.button-save');

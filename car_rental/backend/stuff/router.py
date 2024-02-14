@@ -21,7 +21,24 @@ router = APIRouter(
 @router.get("/managers", response_model=List[StuffInfo])
 async def get_managers(session: AsyncSession = Depends(get_async_session)):
     try:
-        query = select(stuff.c.id, stuff.c.username, stuff.c.password).where(stuff.c.is_admin == False)
+        query = select(stuff.c.id, stuff.c.username, stuff.c.password).where((stuff.c.is_blocked == False) & 
+                                                                             (stuff.c.is_admin == False))
+        result = await session.execute(query)
+        
+        managers_list = [dict(r._mapping) for r in result]
+        
+        return JSONResponse(content={"message": "Stuff data received", "data": managers_list}, status_code=200)  
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    
+    
+@router.get("/blocked_managers", response_model=List[StuffInfo])
+async def get_blocked_managers(session: AsyncSession = Depends(get_async_session)):
+    try:
+        query = select(stuff.c.id, stuff.c.username, stuff.c.password).where((stuff.c.is_blocked == True) & 
+                                                                             (stuff.c.is_admin == False))
         result = await session.execute(query)
         
         managers_list = [dict(r._mapping) for r in result]
@@ -75,9 +92,13 @@ async def login_stuff(stuff_login: Stuff, session: AsyncSession = Depends(get_as
         stuff_dict = [dict(r._mapping) for r in result][0]
         
         password = stuff_dict.get("password")
+        is_blocked = stuff_dict.get("is_blocked")
+        print(f"is_blocked: {is_blocked}")
         
-        if(password == stuff_login.password):
-            return JSONResponse(content={"message": "Successful login", "id": stuff_dict.get("id")}, status_code=200)  
+        if is_blocked:
+             return JSONResponse(content={"message": "Manager is blocked"}, status_code=200) 
+        elif(password == stuff_login.password):
+            return JSONResponse(content={"message": "Successful login", "id": stuff_dict.get("id")}, status_code=200) 
         else:
             return JSONResponse(content={"message": "Wrong password"}, status_code=400)
     except Exception as e:
@@ -143,3 +164,38 @@ async def delete_manager(manager_id: int, session: AsyncSession = Depends(get_as
         print(type(e))
         print(e)
         return JSONResponse(content={"message": "Error occured"}, status_code=400)
+    
+    
+@router.put("/block_manager/{manager_id}")
+async def block_manager(manager_id: int, session: AsyncSession = Depends(get_async_session)):
+    try:
+        stmt = update(stuff).where(stuff.c.id == manager_id).values(is_blocked=True)
+        await session.execute(stmt)
+        await session.commit()
+        return JSONResponse(content={"message": "Manager blocked successfully"}, status_code=200)
+    except IndexError as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Wrong manager_id, this manager doesn't exist"}, status_code=400)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+    
+    
+@router.put("/restore_manager/{manager_id}")
+async def restore_manager(manager_id: int, session: AsyncSession = Depends(get_async_session)):
+    try:
+        stmt = update(stuff).where(stuff.c.id == manager_id).values(is_blocked=False)
+        await session.execute(stmt)
+        await session.commit()
+        return JSONResponse(content={"message": "Manager restored successfully"}, status_code=200)
+    except IndexError as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Wrong manager_id, this manager doesn't exist"}, status_code=400)
+    except Exception as e:
+        print(type(e))
+        print(e)
+        return JSONResponse(content={"message": "Error"}, status_code=400)
+

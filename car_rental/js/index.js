@@ -145,11 +145,12 @@ async function GetCars(url) {
        
     });
     let sec_result = await response_rental_deal.json();
-    let result_rental_deal = sec_result.data;
+    let result_rental_deal = sec_result;
 
     var rental_deal_ids = [];
+    console.log(result_rental_deal);
 
-    for (let item of result_rental_deal){
+    for (let item of result_rental_deal.data){
         rental_deal_ids.push(item.car_id);
     }
 

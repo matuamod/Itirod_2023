@@ -142,7 +142,7 @@ body {
     font-size: 25px;
 }
 
-.update-button {
+.update-button, .accept-button, .restore-button {
     background-color: #2196F3;
     color: white;
     padding: 5px 10px;
@@ -161,7 +161,7 @@ body {
     cursor: pointer;
 }
 
-.delete-button {
+.delete-button, .reject-button {
     background-color: #f44336;
     color: white;
     padding: 5px 10px;
@@ -249,6 +249,11 @@ body {
 }
 
 .blocked-data-message span {
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.reset-password-message span {
     font-weight: bold;
     font-size: 25px;
 }

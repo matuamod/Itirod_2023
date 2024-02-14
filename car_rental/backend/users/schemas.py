@@ -41,3 +41,14 @@ class BlockedUserData(BaseModel):
     email : str
     telephone : str
     license : str
+    
+    
+class PasswordResetCreate(BaseModel):
+    username : str
+    email : str    
+    
+    
+class ResetPasswordsData(BaseModel):
+    id : int
+    username : str
+    email : str

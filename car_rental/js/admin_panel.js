@@ -60,13 +60,29 @@ async function GetStuffAbilities() {
         stuffAbilitiesList.appendChild(ReviewControlItem);
         GetExistingReviews();
 
+        var PasswordControlItem = document.createElement('li');
+        PasswordControlItem.setAttribute('id', 'password-control-li');
+        var PasswordControlLink = document.createElement('a');
+        PasswordControlLink.textContent = 'Password reset control';
+        PasswordControlItem.appendChild(PasswordControlLink);
+        stuffAbilitiesList.appendChild(PasswordControlItem);
+        GetExistingPasswords();
+
         if(result.is_admin) {
-            var BlockedDataControlItem = document.createElement('li');
-            BlockedDataControlItem.setAttribute("id", "blocked-data-control-li");
-            var BlockedDataControlLink = document.createElement('a');
-            BlockedDataControlLink.textContent = 'Blocked data control';
-            BlockedDataControlItem.appendChild(BlockedDataControlLink);
-            stuffAbilitiesList.appendChild(BlockedDataControlItem);
+            var BlockedManagerDataControlItem = document.createElement('li');
+            BlockedManagerDataControlItem.setAttribute("id", "blocked-manager-data-control-li");
+            var BlockedManagerDataControlLink = document.createElement('a');
+            BlockedManagerDataControlLink.textContent = 'Blocked manager data control';
+            BlockedManagerDataControlItem.appendChild(BlockedManagerDataControlLink);
+            stuffAbilitiesList.appendChild(BlockedManagerDataControlItem);
+            GetExistingBlockedManagers();
+
+            var BlockedUserDataControlItem = document.createElement('li');
+            BlockedUserDataControlItem.setAttribute("id", "blocked-user-data-control-li");
+            var BlockedUserDataControlLink = document.createElement('a');
+            BlockedUserDataControlLink.textContent = 'Blocked user data control';
+            BlockedUserDataControlItem.appendChild(BlockedUserDataControlLink);
+            stuffAbilitiesList.appendChild(BlockedUserDataControlItem);
             GetExistingBlockedUsers();
         }
 
@@ -77,7 +93,6 @@ async function GetStuffAbilities() {
         LogoutLink.textContent = 'Logout';
         LogoutItem.appendChild(LogoutLink);
         stuffAbilitiesList.appendChild(LogoutItem);
-
     }
 }
 
@@ -267,10 +282,17 @@ async function renderExistingManagers() {
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', () => deleteManager(manager.id));
 
+        var blockButton = document.createElement('button');
+        blockButton.classList.add('block-button');
+        blockButton.setAttribute('id', `block-button-${manager.id}`);
+        blockButton.textContent = 'Block';
+        blockButton.addEventListener('click', () => blockManager(manager.id));
+
         itemInfo.appendChild(managerUsername);
         itemInfo.appendChild(managerPassword);
         itemButtons.appendChild(updateButton);
         itemButtons.appendChild(deleteButton);
+        itemButtons.appendChild(blockButton);
 
         listItem.appendChild(itemInfo);
         listItem.appendChild(itemButtons);
@@ -2115,6 +2137,113 @@ async function deleteReview(reviewId) {
 }
 
 
+async function renderExistingBlockedManagers() {
+    var adminContent = document.querySelector('.admin-content');
+    adminContent.innerHTML = '';
+
+    var existingBlockedManagersList = document.createElement('ul');
+    existingBlockedManagersList.classList.add('existing-list');
+
+    let response = await fetch('http://127.0.0.1:8000/stuff/blocked_managers', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let managers = dict.data;
+
+    managers.forEach(manager => {
+        var listItem = document.createElement('li');
+        listItem.classList.add('list-item');
+
+        var itemInfo = document.createElement('div');
+        itemInfo.classList.add('large-item-info');
+
+        var itemButtons = document.createElement('div');
+        itemButtons.classList.add('item-buttons');
+
+        var managerUsername = document.createElement('div');
+        managerUsername.classList.add('manager-name');
+        
+        var usernameSpan = document.createElement('span');
+        usernameSpan.classList.add('manager-username');
+        usernameSpan.textContent = `Username: ${manager.username}`;
+
+        managerUsername.appendChild(usernameSpan);
+
+        var managerPassword = document.createElement('div');
+        managerPassword.classList.add('manager-entrycode');
+        managerPassword.classList.add('sub-info');
+        
+        var passwordSpan = document.createElement('span');
+        passwordSpan.classList.add('manager-password');
+        passwordSpan.textContent = `Password: ${manager.password}`;
+
+        managerPassword.appendChild(passwordSpan);
+
+        var restoreButton = document.createElement('button');
+        restoreButton.classList.add('restore-button');
+        restoreButton.setAttribute('id', `restore-button-${manager.id}`);
+        restoreButton.textContent = 'Restore';
+        restoreButton.addEventListener('click', () => restoreManager(manager.id));
+
+        itemInfo.appendChild(managerUsername);
+        itemInfo.appendChild(managerPassword);
+        itemButtons.appendChild(restoreButton);
+
+        listItem.appendChild(itemInfo);
+        listItem.appendChild(itemButtons);
+
+        existingBlockedManagersList.appendChild(listItem);
+    });
+
+    adminContent.appendChild(existingBlockedManagersList);
+}
+
+
+function GetExistingBlockedManagers() {
+    var blockedUsersControlLi = document.getElementById("blocked-manager-data-control-li");
+
+    if(blockedUsersControlLi) {
+        blockedUsersControlLi.addEventListener('click', function(event) {
+            event.preventDefault();  
+            renderExistingBlockedManagers();
+        });
+    }
+}
+
+
+async function blockManager(managerId) {
+    var confirmBlock = window.confirm("Are you sure you want to block manager?");
+    
+    if(confirmBlock) {
+        await fetch(`http://127.0.0.1:8000/stuff/block_manager/${managerId}`, {
+        method: 'PUT',
+        });
+
+        renderExistingManagers();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
+async function restoreManager(managerId) {
+    var confirmRestore = window.confirm("Are you sure you want to restore manager?");
+    
+    if(confirmRestore) {
+        await fetch(`http://127.0.0.1:8000/stuff/restore_manager/${managerId}`, {
+        method: 'PUT',
+        });
+
+        renderExistingBlockedManagers();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
 async function renderExistingBlockedUsers() {
     var adminContent = document.querySelector('.admin-content');
     adminContent.innerHTML = '';
@@ -2193,7 +2322,7 @@ async function renderExistingBlockedUsers() {
 
 
 function GetExistingBlockedUsers() {
-    var blockedUsersControlLi = document.getElementById("blocked-data-control-li");
+    var blockedUsersControlLi = document.getElementById("blocked-user-data-control-li");
 
     if(blockedUsersControlLi) {
         blockedUsersControlLi.addEventListener('click', function(event) {
@@ -2213,6 +2342,131 @@ async function deleteBlockedUser(blockedUserId) {
         });
 
         renderExistingBlockedUsers();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
+async function renderExistingPasswords() {
+    var adminContent = document.querySelector('.admin-content');
+    adminContent.innerHTML = '';
+
+    var existingPasswordsList = document.createElement('ul');
+    existingPasswordsList.classList.add('existing-list');
+
+    let response = await fetch('http://127.0.0.1:8000/users/get_reset_passwords_data', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        } 
+    });
+    let dict = await response.json();
+    let resetPasswords = dict.data;
+
+    resetPasswords.forEach(resetPassword => {
+        var listItem = document.createElement('li');
+        listItem.classList.add('list-item');
+
+        var itemInfo = document.createElement('div');
+        itemInfo.classList.add('large-item-info');
+
+        var itemButtons = document.createElement('div');
+        itemButtons.classList.add('item-buttons');
+
+        var resetPasswordMessage = document.createElement('div');
+        resetPasswordMessage.classList.add('reset-password-message');
+        resetPasswordMessage.classList.add('sub-info');
+
+        var resetPasswordSpan = document.createElement('span');
+        resetPasswordSpan.classList.add('reset-data');
+        resetPasswordSpan.textContent = 'Reset data:';
+
+        resetPasswordMessage.appendChild(resetPasswordSpan);
+
+        var passwordDataInfo = document.createElement('div');
+        passwordDataInfo.classList.add('password-data-info');
+        passwordDataInfo.classList.add('sub-info');
+
+        var usernameSpan = document.createElement('span');
+        usernameSpan.classList.add('blocked-data-email');
+        usernameSpan.textContent = `Username: ${resetPassword.username}`;
+
+        var emailSpan = document.createElement('span');
+        emailSpan.classList.add('blocked-data-email');
+        emailSpan.textContent = `Email: ${resetPassword.email}`;
+
+        passwordDataInfo.appendChild(usernameSpan);
+        passwordDataInfo.appendChild(emailSpan);
+
+        var acceptButton = document.createElement('button');
+        acceptButton.classList.add('accept-button');
+        acceptButton.setAttribute('id', `accept-button-${resetPassword.id}`);
+        acceptButton.textContent = 'Accept';
+        acceptButton.addEventListener('click', () => acceptPassword(resetPassword.id));
+        
+        var rejectButton = document.createElement('button');
+        rejectButton.classList.add('reject-button');
+        rejectButton.setAttribute('id', `reject-button-${resetPassword.id}`);
+        rejectButton.textContent = 'Reject';
+        rejectButton.addEventListener('click', () => rejectPassword(resetPassword.id));
+
+        itemInfo.appendChild(resetPasswordMessage);
+        itemInfo.appendChild(passwordDataInfo);
+        
+        itemButtons.appendChild(acceptButton);
+        itemButtons.appendChild(rejectButton);
+
+        listItem.appendChild(itemInfo);
+        listItem.appendChild(itemButtons);
+
+        existingPasswordsList.appendChild(listItem);
+    });
+
+    adminContent.appendChild(existingPasswordsList);
+}
+
+
+function GetExistingPasswords() {
+    var PasswordControlLi = document.getElementById("password-control-li");
+
+    if(PasswordControlLi) {
+        PasswordControlLi.addEventListener('click', function(event) {
+            event.preventDefault();  
+            renderExistingPasswords();
+        });
+    }
+}
+
+
+async function acceptPassword(passwordId) {
+    var confirmAccept = window.confirm("Are you sure you want to accept resetting user data?");
+
+    if(confirmAccept) {
+        await fetch(`http://127.0.0.1:8000/users/update_user_password_data/${passwordId}`, {
+        method: 'PUT',
+        });
+
+        await fetch(`http://127.0.0.1:8000/users/reject_reset_password_data/${passwordId}`, {
+        method: 'DELETE',
+        });
+
+        renderExistingPasswords();
+    } else {
+        console.log("Passed");
+    }
+}
+
+
+async function rejectPassword(passwordId) {
+    var confirmDelete = window.confirm("Are you sure you want to delete resetting user data?");
+    
+    if(confirmDelete) {
+        await fetch(`http://127.0.0.1:8000/users/reject_reset_password_data/${passwordId}`, {
+        method: 'DELETE',
+        });
+
+        renderExistingPasswords();
     } else {
         console.log("Passed");
     }
